@@ -1,0 +1,18 @@
+<form method="POST" action="/wp-admin/chk-login">
+      {% csrf_token %}
+      
+      <div class="contaner">
+        <div class="mb-3">
+          <label for="user" class="form-label">User Name</label>
+          <input type="text" class="form-control" name="user" id="user" placeholder="User">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Login</button>
+      </div>
+      </form>

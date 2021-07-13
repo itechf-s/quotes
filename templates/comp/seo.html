@@ -1,0 +1,5 @@
+<title>{{metas.title}}</title>
+<link rel="canonical" href="{{url}}" />
+{% for prop, content in metas.items %}
+    <meta property="{{prop}}" content="{{content}}" />
+{% endfor %}

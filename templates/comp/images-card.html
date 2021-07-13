@@ -1,0 +1,43 @@
+{% load static %}
+<script>
+   function activate(id, isActive) {
+    let formData = new FormData();
+      formData.append('id', id);
+      formData.append('isActive', isActive);
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      fetch("/wp-admin/act-image",{
+        body: formData,
+        method: "post"
+    });
+    console.log(id)
+    window.location.reload()
+    
+   }
+   </script>
+<div class="card-group mt-3 mb-3 ms-1 me-1">
+{% for image in images %}
+  <div class="card mb-1 ms-1 me-1">
+    <a href="{{image.pageURL}}">
+      <img src="{{image.previewURL}}" class="img-fluid rounded" alt="{{image.tags}}" title="{{image.tags}}">
+    </a>
+    <div class="card-body">
+    <div>{{image.tags}}</div>
+      <a href="{{image.webformatURL}}" class="card-text">Show {{image.id}}</a>    
+      {% if image.isActive == 0 %}
+        <p class="btn" onclick="activate({{image.id}}, 1)">Activate</p>
+      {% endif %}
+      {% if image.isActive == 1 %}
+        <p class="btn" onclick="activate({{image.id}}, 0)">Deactivate</p>
+      {% endif %} 
+
+    </div>
+
+   </div>
+    {% if forloop.counter|divisibleby:"7" %}
+      </div>
+      <div class="card-group mt-3 mb-3 ms-1 me-1">
+    {% endif %}
+  {% endfor %}
+</div>
+{% include './searchModal.html' %}
+{% include './importImageModal.html' %}

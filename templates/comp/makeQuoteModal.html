@@ -1,0 +1,56 @@
+<!-- Button trigger modal -->
+<p class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#mqModal{{quote.id}}">
+  Make Quote
+</p>
+
+<!-- Modal -->
+<div class="modal fade" id="mqModal{{quote.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Remake Quote If not Good</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="/wp-admin/make-quote">
+      {% csrf_token %}
+      <input type="hidden" value="{{quote.id}}" name="id" id="id"/>
+      <label class="form-label">Quotes Id : {{quote.id}}</label>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="fontSize" class="form-label">Font Size</label>
+          <input type="number" class="form-control" value="{{quote.fontSize}}" name="fontSize" id="fontSize" placeholder="Font Size">
+        </div>
+        <div class="mb-3">
+          <label for="wordWrap" class="form-label">Word Wrap</label>
+          <input type="number" class="form-control" name="wordWrap" id="wordWrap" value="{{quote.wordWrap}}" placeholder="Word Wrap">
+        </div>
+        <div class="mb-3">
+          <label for="imageId" class="form-label">Image Id</label>
+          <input type="number" class="form-control" name="imageId" id="imageId" value="{{quote.imageId}}" placeholder="Image Id">
+        </div>
+        <div class="mb-3">
+          <select class="form-select" aria-label="Default select example" id="fontColor" name="fontColor">
+          <option value="{{quote.fontColor}}" selected>{{quote.fontColor}}</option>
+          <option value="red">Red</option>
+          <option value="black">Black</option>
+          <option value="white">White</option>
+          <option value="yellow">Yellow</option>
+          <option value="orange">Orange</option>
+          <option value="green">Green</option>
+          <option value="blue">Blue</option>
+          <option value="indigo">Indigo</option>
+          <option value="violet">Violet</option>
+          <option value="purple">Purple</option>
+        </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Make</button>
+      </div>
+      </form>
+
+
+    </div>
+  </div>
+</div>

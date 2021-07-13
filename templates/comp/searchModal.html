@@ -1,0 +1,40 @@
+<!-- Button trigger modal -->
+{% comment %} <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#searchModal">Search Quotes</a> {% endcomment %}
+
+<!-- Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="searchModalLabel">Search Quotes About </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="GET" action="/wp-admin/list/0/0">
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="id" class="form-label">Quotes Id</label>
+          <input type="number" class="form-control" name="id" id="id" placeholder="Quotes Id">
+        </div>
+      <div class="mb-3">
+          <label for="quotes" class="form-label">Quotes</label>
+          <input type="text" class="form-control" name="quotes" id="quotes" placeholder="Quotes">
+        </div>
+        <div class="mb-3">
+          <label for="category" class="form-label">Category</label>
+          <input type="text" class="form-control" name="category" id="category" placeholder="Category">
+        </div>
+        <div class="mb-3">
+          <label for="author" class="form-label">Authors</label>
+          <input type="text" class="form-control" name="author" id="author" placeholder="Authors">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+      </form>
+
+
+    </div>
+  </div>
+</div>

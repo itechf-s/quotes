@@ -1,0 +1,76 @@
+{% load static %}
+
+  <script>
+   function activate(id, isActive) {
+    let formData = new FormData();
+      formData.append('id', id);
+      formData.append('isActive', isActive);
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      fetch("/wp-admin/activate",{
+        body: formData,
+        method: "post"
+    });
+    //console.log(id)
+    window.location.reload()
+   }
+
+    function makeQuote(id) {
+    let formData = new FormData();
+      formData.append('id', id);
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      fetch("/wp-admin/make-quote",{
+        body: formData,
+        method: "post"
+    });
+    //console.log(id)
+    window.location.reload()
+    
+   }
+
+    function prepareQuotes(id) {
+    let formData = new FormData();
+      formData.append('id', id);
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      fetch("/wp-admin/update",{
+        body: formData,
+        method: "post"
+    });
+    //console.log(id)
+    window.location.reload()
+    
+  }
+   </script>
+<div class="card-group mt-3 mb-3 ms-1 me-1">
+{% for quote in quotes %}
+  <div class="card mb-1 ms-1 me-1">
+    <img src="{% static 'images/' %}{{quote.imagePath}}?v={% now 'u' %}" class="img-fluid rounded" alt="{{quote.imageAlt}}">
+    <div class="card-body">
+      <p class="card-text text-center blockquote">{{quote.id}}. {{quote.quotes}}</p>
+      <p class="text-end text-muted blockquote-footer">{{quote.author}}</p>
+      <hr class="h1"/>
+      <p class="btn btn-outline-dark btn-sm">{{quote.category}}</p>
+      <p class="btn btn-outline-dark btn-sm">{{quote.publishAt}}</p>
+      {% if quote.isActive == 0 and quote.isUpdated == 0 %}
+      <p class="btn btn-outline-dark btn-sm" onclick="prepareQuotes({{quote.id}}, 1)">Prepare Quotes</p>
+      {% endif %}
+      {% if quote.isActive == 0 and quote.isUpdated == 1 %}
+      <p class="btn btn-outline-dark btn-sm" onclick="activate({{quote.id}}, 1)">Publish</p>
+      {% endif %}
+      {% if quote.isActive == 1 %}
+      <p class="btn btn-outline-dark btn-sm" onclick="activate({{quote.id}}, 0)">Draft</p>
+      {% endif %}
+      {% if quote.isUpdated == 1 %}
+      {% include './makeQuoteModal.html' %}
+      {% endif %}
+      
+    </div>
+    {% include './social-share.html' %}
+  </div>
+    {% if forloop.counter|divisibleby:"3" %}
+      </div>
+      <div class="card-group mt-3 mb-3 ms-1 me-1">
+    {% endif %}
+  {% endfor %}
+</div>
+{% include './searchModal.html' %}
+{% include './importImageModal.html' %}

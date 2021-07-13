@@ -1,0 +1,18 @@
+User-agent: *
+Disallow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Adsbot-Google
+Allow: /
+
+User-agent: Googlebot-Mobile
+Allow: /
+
+Disallow: /wp-admin/
+
+Sitemap: https://quotes.bestrani.com/sitemap.xml

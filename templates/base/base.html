@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  {% include './header.html' %}
+  {% block seo%}{% endblock %}
+  </head> 
+  <body>
+  {% include './navigation.html' %}
+    {% block body %}{% endblock body %}
+  {% include './footer.html' %}  
+  </body>
+</html>

@@ -1,0 +1,42 @@
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/"><img src="https://bestrani.com/wp-content/uploads/2021/01/bestrani-logo.png" alt="BestRani Quotes Logo"  width="213" height="47"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="QuotesMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Quotes
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="QuotesMenuLink">
+            <li><a href="/wp-admin/list/0/0?v={% now 'u' %}" class="dropdown-item">Raw Quotes</a></li>
+            <li><a href="/wp-admin/list/0/1?v={% now 'u' %}" class="dropdown-item">Draft Quotes</a></li>
+            <li><a href="/wp-admin/list/1/1?v={% now 'u' %}" class="dropdown-item">Published Quotes</a></li> 
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#searchModal">Search Quotes</a></li>
+            <li><a href="/wp-admin/import-quotes?id=159753" class="dropdown-item">Import Quotes</a></li>
+            <li><a href="/wp-admin/update?v={% now 'u' %}" class="dropdown-item">Create Quotes</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="ImagesMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Images
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="ImagesMenuLink">
+            <li><a href="/wp-admin/list-images/0?v={% now 'u' %}" class="dropdown-item">Deactive Images</a></li>
+            <li><a href="/wp-admin/list-images/1?v={% now 'u' %}" class="dropdown-item">Active Images</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importImageModal">Import Images</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="/wp-admin/cache-purge?id=159753" aria-current="page" class="nav-link">Purge</a>
+        </li>
+        </ul>
+        <span class="navbar-text"><a href="/wp-admin/chk-logout" aria-current="page" class="nav-link">Logout</a></span>
+        <div class="navbar-text">
+         <label class="">Hello : {{ user.username|default:'Guest' }}</label>
+        </div>
+      </div>
+    </div>
+  </nav>

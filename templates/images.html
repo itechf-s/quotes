@@ -1,0 +1,21 @@
+{% extends 'base/admin-base.html' %}
+
+{% block title %}
+Raw Images from Pixabay
+{% endblock  %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <form method="GET" action="/wp-admin/list-images/1">
+    <div class="row">
+        <div class="col-8">
+            <input type="Search" name="tags" id="tags" class="form-control" placeholder="Tags">
+        </div>
+        <div class="col-4">
+            <button type="submit" class="form-control btn btn-primary">Search</button>
+        </div>
+    </div>
+    </form>
+    </div>
+{% include './comp/images-card.html' %}
+{% endblock %}
