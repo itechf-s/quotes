@@ -2,7 +2,7 @@
 <div class="card-group mt-3 mb-3 ms-1 me-1">
 {% for quote in quotes %}
   <div class="card mb-1 ms-1 me-1">
-    <a href="/quotes/{{quote.quotes|truncatewords:5|slugify}}-by-{{quote.author|slugify}}-{{quote.id}}">
+    <a href="{{urlPrefix}}/quotes/{{quote.quotes|truncatewords:5|slugify}}-by-{{quote.author|slugify}}-{{quote.id}}">
       <img src="{% static './images/lazy-img.png' %}" data-src="{% static 'images/' %}{{quote.imagePath}}" class="lazy" alt="{{quote.imageAlt}}" width="640" height="360">
     </a>
     <div class="card-body">
