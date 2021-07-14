@@ -14,13 +14,13 @@
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqYF8yPuCwzCP_8QHdMGSCpo2yd3LuD-39CL56kfzkMRJ2uepj4K8oGPVqvoewsDflUKg&usqp=CAU" alt="...">
       </div>
     </div> {% endcomment %}
-      <a href="quotes/{{quote1.quotes|truncatewords:5|slugify}}-by-{{quote1.author|slugify}}-{{quote1.id}}" class="card-text text-center blockquote">{{quote1.quotes}}</a>
+      <span class="card-text text-center">{{quote1.quotes}}</span>
       <div class="row">
       <a href="/{{quote1.category|slugify}}-quotes" class="col-4 btn btn-outline-dark btn-sm">{{quote1.category}}</a>
       <a href="/authors/{{quote1.author|slugify}}-quotes" class="col-8 text-end blockquote-footer link-dark">{{quote1.author}}</a>
       </div>      
     </div>
-    {% include './social-share.html' %}
+    {% include './social-share-detail.html' %}
   </div>
 </div>
 <hr/>
