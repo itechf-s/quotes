@@ -13,6 +13,7 @@ from bestrani import env
 imageRows = int(env.get('quotes', 'IMAGE_ROWS'))
 adminRows = int(env.get('quotes', 'ADMIN_ROWS'))
 createRows = int(env.get('quotes', 'CREATE_ROWS'))
+schdApiKey = env.get('security', 'SCHD_API_KEY')
 
 
 def showLogin(request):
@@ -80,6 +81,16 @@ def activate(request):
             db.scheduleQuotes(quote, isSchd)    
     return render(request, 'activate.html', {'quotes': quote})
 
+def activateSchedule(request):
+    apiKey = request.GET.get('api_key', None)
+    quote = None
+    if schdApiKey == apiKey:
+        filterParam = {'isActive' : 0, 'isUpdated' : 1, 'isSchd' : 1}
+        quote = Quotes.objects.filter(**filterParam).order_by('id').first()
+        print(quote)
+        db.activateQuotes(quote)
+    return render(request, 'activate.html', {'quotes': quote})
+
 @login_required(login_url='/mycms')
 def update(request):
     id = request.POST.get('id', None)
@@ -129,7 +140,7 @@ def makeQuote(request):
         quote = Quotes.objects.filter(id=id).filter(isUpdated=1).first()
         if quote != None:
             utils.writeQuotesOnImage(quote, param)      
-    return redirect('/wp-admin/list/0/1')
+    return redirect('/wp-admin/list/0/1?isSchd=0')
 
 @login_required(login_url='/mycms')
 def chkLogout(request):
