@@ -1,5 +1,6 @@
 #Import required libraries
 import os
+from quotes.admin.wpmodels import Images
 import textwrap
 from PIL import Image, ImageDraw, ImageFont
 import urllib.request
@@ -13,6 +14,8 @@ fonts = env.get('quotes', 'FONT_LIST').split(',')
 def writeQuotesOnImage(qot, param):   
     #Create Image object
     imageId = param[3] if param[3] != None else qot.imageId
+    if not isImageExist(imageId):
+        imageId = findOneImage().id
     fileName = app_root + image_path + 'raw/' + str(imageId) + '.jpg'
     im = Image.open(fileName)
     rNum = qot.id % len(fonts)
@@ -100,3 +103,22 @@ def createDir(dirName):
         os.mkdir(dirName, mode = 0o755)
         print('Dir Created on : ', dirName)
 
+def isImageExist(imageId):
+    flag = False
+    fileName = app_root + image_path + 'raw/' + str(imageId) + '.jpg'
+    if os.path.isfile(fileName):
+        print('file found')
+        flag = True
+    return flag
+
+
+def findOneImage():
+    img = Images.objects.filter(isActive=1).filter(webformatHeight__gt=400).order_by('?').first()
+    if not img:
+        img = Images.objects.filter(id=1).first()
+    if isImageExist(img.id):
+        return img
+    else:
+        img.isDeleted = 1
+        img.save()
+        findOneImage()

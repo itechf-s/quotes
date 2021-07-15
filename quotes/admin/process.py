@@ -12,8 +12,9 @@ def updateQuotesImage(quotesObj):
         today = time.strftime('%Y%m%d')
         obj.imagePath = today + "/" + slugify(imgText) + '.jpg'
         obj.imageAlt = imgText
+        obj.title = textwrap.wrap(obj.quotes, width=100)[0]
         obj.isUpdated = 1
-        img = Images.objects.filter(isActive=1).filter(webformatHeight__gt=400).order_by('?').first()
+        img = utils.findOneImage()
         obj.fontSize = utils.findFontSize(obj.quotes.__len__(), img.webformatWidth)
         obj.wordWrap = 30
         obj.rawImage = img.previewURL

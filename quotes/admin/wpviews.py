@@ -43,6 +43,7 @@ def list(request, isActive, isUpdated):
     quotesTxt = request.GET.get('quotes', None)
     author = request.GET.get('author', None)
     id = request.GET.get('id', None)
+    isSchd = request.GET.get('isSchd', None)
 
     filterParam = {'isActive' : isActive, 'isUpdated' : isUpdated}
     if quotesTxt:
@@ -53,6 +54,11 @@ def list(request, isActive, isUpdated):
         filterParam['author'] = author
     if id:
         filterParam['id'] = id
+    if isSchd:
+        filterParam['isSchd'] = isSchd
+
+
+    print('final filterparam in listing', filterParam)
 
     quotes = Quotes.objects.filter(**filterParam).order_by('-id')[:adminRows]
     return render(request, 'list.html', {'quotes': quotes})
@@ -61,15 +67,18 @@ def list(request, isActive, isUpdated):
 def activate(request):
     id = request.POST.get('id', None)
     isActive = request.POST.get('isActive', None)
+    isSchd = request.POST.get('isSchd', None)
 
-    quotes = None
-    if id != None:
-        quotes = Quotes.objects.filter(id=id)
+    quote = None
+    if id:
+        quote = Quotes.objects.filter(id=id).first()
         if isActive == '1':
-            db.activateQuotes(quotes)
-        else:
-            db.deAactivateQuotes(quotes)       
-    return render(request, 'activate.html', {'quotes': quotes})
+            db.activateQuotes(quote)
+        elif isActive == '0':
+            db.deAactivateQuotes(quote)
+        elif isSchd:
+            db.scheduleQuotes(quote, isSchd)    
+    return render(request, 'activate.html', {'quotes': quote})
 
 @login_required(login_url='/mycms')
 def update(request):
@@ -120,8 +129,6 @@ def makeQuote(request):
         quote = Quotes.objects.filter(id=id).filter(isUpdated=1).first()
         if quote != None:
             utils.writeQuotesOnImage(quote, param)      
-            cache.purge()
-    #return render(request, 'update.html', {'quotes': quote})
     return redirect('/wp-admin/list/0/1')
 
 @login_required(login_url='/mycms')

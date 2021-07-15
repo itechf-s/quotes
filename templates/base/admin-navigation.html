@@ -12,7 +12,8 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="QuotesMenuLink">
             <li><a href="/wp-admin/list/0/0?v={% now 'u' %}" class="dropdown-item">Raw Quotes</a></li>
-            <li><a href="/wp-admin/list/0/1?v={% now 'u' %}" class="dropdown-item">Draft Quotes</a></li>
+            <li><a href="/wp-admin/list/0/1?isSchd=0&v={% now 'u' %}" class="dropdown-item">Draft Quotes</a></li>
+            <li><a href="/wp-admin/list/0/1?isSchd=1&v={% now 'u' %}" class="dropdown-item">Schedule Quotes</a></li> 
             <li><a href="/wp-admin/list/1/1?v={% now 'u' %}" class="dropdown-item">Published Quotes</a></li> 
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#searchModal">Search Quotes</a></li>
             <li><a href="/wp-admin/import-quotes?id=159753" class="dropdown-item">Import Quotes</a></li>
