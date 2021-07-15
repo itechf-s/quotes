@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'quotes.apps.QuotesConfig',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +80,10 @@ WSGI_APPLICATION = 'bestrani.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-
+#My Cron
+CRONJOBS = [
+    ('*/1 * * * *', 'quotes.admin.wpviews.runSchedule')
+]
 
 DATABASES = {
     'default': {

@@ -13,6 +13,19 @@
     //console.log(id)
     window.location.reload()
    }
+//schedule quotes
+   function schedule(id, isSchd) {
+    let formData = new FormData();
+      formData.append('id', id);
+      formData.append('isSchd', isSchd);
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      fetch("/wp-admin/activate",{
+        body: formData,
+        method: "post"
+    });
+    //console.log(id)
+    window.location.reload()
+   }
 
     function makeQuote(id) {
     let formData = new FormData();
@@ -46,25 +59,29 @@
     <img src="{% static 'images/' %}{{quote.imagePath}}?v={% now 'u' %}" class="img-fluid rounded" alt="{{quote.imageAlt}}">
     <div class="card-body">
       <p class="card-text text-center blockquote">{{quote.id}}. {{quote.quotes}}</p>
-      <p class="text-end text-muted blockquote-footer">{{quote.author}}</p>
-      <hr class="h1"/>
-      <p class="btn btn-outline-dark btn-sm">{{quote.category}}</p>
-      <p class="btn btn-outline-dark btn-sm">{{quote.publishAt}}</p>
+      <p class="text-end">{{quote.author}}</p>
+      <p class="card-text">{{quote.category}}</p>
+      <p class="card">{{quote.publishAt}}</p>
       {% if quote.isActive == 0 and quote.isUpdated == 0 %}
       <p class="btn btn-outline-dark btn-sm" onclick="prepareQuotes({{quote.id}}, 1)">Prepare Quotes</p>
       {% endif %}
       {% if quote.isActive == 0 and quote.isUpdated == 1 %}
+        {% if quote.isSchd == 0 %}
+        <p class="btn btn-outline-dark btn-sm" onclick="schedule({{quote.id}}, 1)">Schedule</p>
+        {% endif %}
       <p class="btn btn-outline-dark btn-sm" onclick="activate({{quote.id}}, 1)">Publish</p>
       {% endif %}
       {% if quote.isActive == 1 %}
       <p class="btn btn-outline-dark btn-sm" onclick="activate({{quote.id}}, 0)">Draft</p>
+      {% endif %}
+      {% if quote.isSchd == 1 %}
+      <p class="btn btn-outline-dark btn-sm" onclick="schedule({{quote.id}}, 0)">Unschedule</p>
       {% endif %}
       {% if quote.isUpdated == 1 %}
       {% include './makeQuoteModal.html' %}
       {% endif %}
       
     </div>
-    {% include './social-share.html' %}
   </div>
     {% if forloop.counter|divisibleby:"3" %}
       </div>

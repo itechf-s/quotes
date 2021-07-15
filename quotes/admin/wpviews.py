@@ -13,6 +13,7 @@ from bestrani import env
 imageRows = int(env.get('quotes', 'IMAGE_ROWS'))
 adminRows = int(env.get('quotes', 'ADMIN_ROWS'))
 createRows = int(env.get('quotes', 'CREATE_ROWS'))
+schdApiKey = env.get('security', 'SCHD_API_KEY')
 
 
 def showLogin(request):
@@ -43,6 +44,7 @@ def list(request, isActive, isUpdated):
     quotesTxt = request.GET.get('quotes', None)
     author = request.GET.get('author', None)
     id = request.GET.get('id', None)
+    isSchd = request.GET.get('isSchd', None)
 
     filterParam = {'isActive' : isActive, 'isUpdated' : isUpdated}
     if quotesTxt:
@@ -53,6 +55,8 @@ def list(request, isActive, isUpdated):
         filterParam['author'] = author
     if id:
         filterParam['id'] = id
+    if isSchd:
+        filterParam['isSchd'] = isSchd
 
     quotes = Quotes.objects.filter(**filterParam).order_by('-id')[:adminRows]
     return render(request, 'list.html', {'quotes': quotes})
@@ -61,15 +65,24 @@ def list(request, isActive, isUpdated):
 def activate(request):
     id = request.POST.get('id', None)
     isActive = request.POST.get('isActive', None)
+    isSchd = request.POST.get('isSchd', None)
 
-    quotes = None
-    if id != None:
-        quotes = Quotes.objects.filter(id=id)
+    quote = None
+    if id:
+        quote = Quotes.objects.filter(id=id).first()
         if isActive == '1':
-            db.activateQuotes(quotes)
-        else:
-            db.deAactivateQuotes(quotes)       
-    return render(request, 'activate.html', {'quotes': quotes})
+            db.activateQuotes(quote)
+        elif isActive == '0':
+            db.deAactivateQuotes(quote)
+        elif isSchd:
+            db.scheduleQuotes(quote, isSchd)    
+    return render(request, 'activate.html', {'quotes': quote})
+
+def runSchedule():
+    filterParam = {'isActive' : 0, 'isUpdated' : 1, 'isSchd' : 1}
+    quote = Quotes.objects.filter(**filterParam).order_by('id').first()
+    print(quote)
+    db.activateQuotes(quote)
 
 @login_required(login_url='/mycms')
 def update(request):
@@ -120,9 +133,7 @@ def makeQuote(request):
         quote = Quotes.objects.filter(id=id).filter(isUpdated=1).first()
         if quote != None:
             utils.writeQuotesOnImage(quote, param)      
-            cache.purge()
-    #return render(request, 'update.html', {'quotes': quote})
-    return redirect('/wp-admin/list/0/1')
+    return redirect('/wp-admin/list/0/1?isSchd=0')
 
 @login_required(login_url='/mycms')
 def chkLogout(request):

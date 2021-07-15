@@ -25,6 +25,7 @@ class Images(models.Model):
     user = models.CharField(max_length=50)
     userImageURL = models.CharField(max_length=100)
     isActive = models.IntegerField(default=0)
+    isDeleted = models.IntegerField(default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
 

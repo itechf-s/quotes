@@ -133,3 +133,4 @@ app.ini
 prod-app.ini
 *.jpg
 *.png
+migrations/
