@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'bestrani.wsgi.application'
 
 #My Cron
 CRONJOBS = [
-    ('*/1 * * * *', 'quotes.admin.wpviews.runSchedule')
+    ('*/30 8-20 * * 1-6', 'quotes.admin.wpviews.runSchedule')
 ]
 
 DATABASES = {
