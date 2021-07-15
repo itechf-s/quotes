@@ -1,1 +1,4 @@
-curl -o /tmp/schd.txt 'http://localhost:8000/wp-admin/activateSchedule?api_key=90aa2135fb5192db772d837a8@34Ds3@D^^@222sW2'
+curl -o /tmp/schd.txt 'http://localhost:8000/wp-admin/activateSchedule?api_key=somekey
+
+python manage.py crontab add
+python manage.py crontab show

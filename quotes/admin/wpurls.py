@@ -9,7 +9,6 @@ urlpatterns = [
     path('make-quote',wpviews.makeQuote, name='makeQuote'),
     path('list/<int:isActive>/<int:isUpdated>',wpviews.list, name='list'),
     path('activate',wpviews.activate, name='activate'),
-    path('activateSchedule',wpviews.activateSchedule, name='activateSchedule'),
     path('cache-purge', wpviews.cachePurge, name='cachePurge'),
     path('import-quotes', wpviews.importQuotes, name='cachePurge'),
 

@@ -58,9 +58,6 @@ def list(request, isActive, isUpdated):
     if isSchd:
         filterParam['isSchd'] = isSchd
 
-
-    print('final filterparam in listing', filterParam)
-
     quotes = Quotes.objects.filter(**filterParam).order_by('-id')[:adminRows]
     return render(request, 'list.html', {'quotes': quotes})
 
@@ -81,15 +78,11 @@ def activate(request):
             db.scheduleQuotes(quote, isSchd)    
     return render(request, 'activate.html', {'quotes': quote})
 
-def activateSchedule(request):
-    apiKey = request.GET.get('api_key', None)
-    quote = None
-    if schdApiKey == apiKey:
-        filterParam = {'isActive' : 0, 'isUpdated' : 1, 'isSchd' : 1}
-        quote = Quotes.objects.filter(**filterParam).order_by('id').first()
-        print(quote)
-        db.activateQuotes(quote)
-    return render(request, 'activate.html', {'quotes': quote})
+def runSchedule():
+    filterParam = {'isActive' : 0, 'isUpdated' : 1, 'isSchd' : 1}
+    quote = Quotes.objects.filter(**filterParam).order_by('id').first()
+    print(quote)
+    db.activateQuotes(quote)
 
 @login_required(login_url='/mycms')
 def update(request):
