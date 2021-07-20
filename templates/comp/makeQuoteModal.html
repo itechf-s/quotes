@@ -14,7 +14,8 @@
       <form method="POST" action="/wp-admin/make-quote">
       {% csrf_token %}
       <input type="hidden" value="{{quote.id}}" name="id" id="id"/>
-      <label class="form-label">Quotes Id : {{quote.id}}</label>
+      <label class="form-label">Quotes Id : {{quote.id}}</label><br/>
+      <label class="form-label">Quotes Length : {{quote.quotes | length}}</label>
       <div class="modal-body">
         <div class="mb-3">
           <label for="fontSize" class="form-label">Font Size</label>

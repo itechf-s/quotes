@@ -30,4 +30,7 @@ def setMetas(qots, url):
         metas['twitter:title'] = qot.imageAlt     
         metas['twitter:description'] = desc     
         metas['twitter:image'] = imgPath
+        metas['datePublished'] = qot.publishAt.strftime("%Y-%m-%dT%H:%M:%S%z")
+        #if qot.updatedAt > qot.publishAt:
+        #    metas['dateModified'] = qot.publishAt.strftime("%Y-%m-%dT%H:%M:%S%z")
     return metas

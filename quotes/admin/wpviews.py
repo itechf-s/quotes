@@ -136,6 +136,20 @@ def makeQuote(request):
     return redirect('/wp-admin/list/0/1?isSchd=0')
 
 @login_required(login_url='/mycms')
+def makeBulkQuotes(request):
+    rows = request.POST.get('rows', None)
+    rows = rows if rows else 2
+    filterParam = {'isUpdated' : 1}
+    quotes = Quotes.objects.filter(**filterParam).order_by('id')[:rows]
+    if not quotes:
+        update(request)
+        quotes = Quotes.objects.filter(**filterParam).order_by('id')[:rows]
+    for quote in quotes:
+        param = ('', '', '', '')
+        utils.writeQuotesOnImage(quote, param)      
+    return redirect('/wp-admin/list/0/1?isSchd=0')
+
+@login_required(login_url='/mycms')
 def chkLogout(request):
     logout(request)
     messages.success(request,'Logout Success')

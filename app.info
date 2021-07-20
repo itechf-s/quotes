@@ -4,3 +4,5 @@ pip install django-crontab
 
 python manage.py crontab add
 python manage.py crontab show
+select * from quotes_quotes where isActive = 1;
+update quotes_quotes set isActive = 0, isUpdated = 0, isSchd = 0 where isUpdated = 1;

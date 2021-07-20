@@ -10,10 +10,11 @@ app_root = env.get('quotes', 'APP_ROOT')
 image_path = env.get('quotes', 'IMG_DIR')
 fontDir = env.get('quotes', 'FONT_DIR')
 fonts = env.get('quotes', 'FONT_LIST').split(',')
+fontAndWordwrap = eval(env.get('quotes', 'FONT_AND_WORDWRAP'))
     
 def writeQuotesOnImage(qot, param):   
     #Create Image object
-    imageId = param[3] if param[3] != None else qot.imageId
+    imageId = param[3] if param[3] else qot.imageId
     if not isImageExist(imageId):
         imageId = findOneImage().id
     fileName = app_root + image_path + 'raw/' + str(imageId) + '.jpg'
@@ -25,9 +26,9 @@ def writeQuotesOnImage(qot, param):
     font = app_root + fontDir + fonts[rNum]
     print(font)
     
-    fSize = param[0] if param[0] != None else qot.fontSize
-    wordWrap = param[1] if param[1] != None else qot.wordWrap
-    fontColor = param[2] if param[2] != None else qot.fontColor
+    fSize = param[0] if param[0] else qot.fontSize
+    wordWrap = param[1] if param[1] else qot.wordWrap
+    fontColor = param[2] if param[2] else qot.fontColor
 
     #Update Value
     qot.fontSize = fSize
@@ -68,24 +69,53 @@ def writeQuotesOnImage(qot, param):
     im.save(app_root + image_path + qot.imagePath)
     print('writeQuotesOnImage done for id: ', qot.id)
 
-def findFontSize(len, width):
+def findFontSize(Qlen, width):
     width = int(width)
+    wordWrap = 38
+    fontSize = 11
+    for len, fontWrap in fontAndWordwrap.items():
+        if Qlen <= len:
+            fontSize = fontWrap[0]
+            wordWrap = fontWrap[1]
+            print('Quotes Length : ', Qlen, ' | fontSize: ', fontSize, ' wordwrap : ', wordWrap)
+            break
+    return (fontSize, wordWrap)
+
+
+def findFontSize2(len, width):
+    width = int(width)
+    wordWrap = 38
     print('image : ', width)
     fontSize = int(9 * width/1000)
 
-    if len > 500:
-        fontSize = fontSize * 1
-    elif len < 500 and len > 400:
-        fontSize = fontSize = fontSize * 3
-    elif len < 400 and len > 300:
-        fontSize = fontSize * 5
-    elif len < 300 and len > 200:
-        fontSize = fontSize * 6
-    elif len < 200 and len > 100:
-        fontSize = fontSize * 7
+    if len > 350:
+        fontSize = 30
+    elif len > 300:
+        fontSize = 35
+        wordWrap = 35
+    elif len > 250:
+        fontSize = 40
+        wordWrap = 32
+    elif len > 200:
+        fontSize = 45
+        wordWrap = 30
+    elif len > 150:
+        fontSize = 50
+        wordWrap = 28
+    elif len > 100:
+        fontSize = 52
+        wordWrap = 21
+    elif len > 50:
+        fontSize = 55
+        wordWrap = 21
+    elif len > 25:
+        fontSize = 60
+        wordWrap = 20
     else:
-        fontSize = fontSize * 8
-    return fontSize
+        fontSize = 65
+        wordWrap = 15
+    print('final font size', fontSize, wordWrap)
+    return (fontSize, wordWrap)
 
 def downloadImage(id, url):
     opener=urllib.request.build_opener()
