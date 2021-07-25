@@ -3,7 +3,7 @@
   <div class="whatsapp"></div>
   <div class="facebook"></div>
   {% if quote.isPin == 1 %}
-  <div class="pinterest" data-media="{% static 'images/' %}{{quote.imagePathPin}}"></div>
+  <div class="pinterest" data-media="{{urlPrefix}}{% static 'images/' %}{{quote.imagePathPin}}"></div>
   {% endif %}
   <div class="twitter"></div>
   <div class="linkedin"></div>
