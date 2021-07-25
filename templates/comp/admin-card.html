@@ -79,7 +79,7 @@
       <p class="text-end">{{quote.author}}</p>
       <p class="card-text">{{quote.category}}</p>
       <p class="card">{{quote.publishAt}}</p>
-      {% if quote.isActive == 0 and quote.isUpdated == 0 %}
+      {% if quote.isActive == 0 and quote.isUpdated == 0 and quote.isPin == 0 %}
       <p class="btn btn-outline-dark btn-sm" onclick="prepareQuotes({{quote.id}}, 1)">Prepare Quotes</p>
       {% endif %}
       {% if quote.isActive == 0 and quote.isUpdated == 1 %}
