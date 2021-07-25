@@ -1,3 +1,4 @@
+{% load static %}
 <!-- Button trigger modal -->
 <p class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#mqModal{{quote.id}}">
   Make Quote
@@ -26,8 +27,15 @@
           <input type="number" class="form-control" name="wordWrap" id="wordWrap" value="{{quote.wordWrap}}" placeholder="Word Wrap">
         </div>
         <div class="mb-3">
-          <label for="imageId" class="form-label">Image Id</label>
-          <input type="number" class="form-control" name="imageId" id="imageId" value="{{quote.imageId}}" placeholder="Image Id">
+          <div class="row">
+            <div class="col">
+              <label for="imageId" class="form-label">Image Id</label>
+              <input type="number" class="form-control" id="imageId-{{quote.imageId}}" name="imageId" value="{{quote.imageId}}" placeholder="Image Id" onchange="changeImg({{quote.imageId}}, this.id)">
+            </div>
+            <div class="col">
+              <img id="raw-img-{{quote.imageId}}" src="{% static 'images/raw/' %}{{quote.imageId}}.jpg" width="150" height="100" class="img-fluid rounded">
+            </div>
+          </div>
         </div>
         <div class="mb-3">
           <select class="form-select" aria-label="Default select example" id="fontColor" name="fontColor">
@@ -43,6 +51,10 @@
           <option value="violet">Violet</option>
           <option value="purple">Purple</option>
         </select>
+        </div>
+        <div class="mb-3">
+          <input class="form-check-input" type="checkbox" {% if quote.isPin == 1 %} checked {% endif %} value="1" id="isPin" name='isPin'>
+          <label class="form-check-label" for="isPin">Pintrest Image</label>
         </div>
       </div>
       <div class="modal-footer">

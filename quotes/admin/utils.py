@@ -43,11 +43,10 @@ def writeQuotesOnImage(qot, param):
         fSize = 20
     fontH1 = ImageFont.truetype(font, fSize)
     fontH2 = ImageFont.truetype(font, fSize + 3)
-    
 
     #Draw line
     draw = ImageDraw.Draw(im)
-
+    
     w, h = im.size
     
     lines = textwrap.wrap(qot.quotes, width=wordWrap)
@@ -56,7 +55,7 @@ def writeQuotesOnImage(qot, param):
         width, height = fontH1.getsize(line)
         #print(width, height)
         if h > y_text + height*2:
-            draw.text(((w - width) / 2, y_text), line, font=fontH2, fill=fontColor) 
+            draw.text(((w - width) / 2, y_text), line, font=fontH2, fill=fontColor)
             y_text += height
 
     width, height = fontH2.getsize(qot.author)
@@ -66,8 +65,77 @@ def writeQuotesOnImage(qot, param):
 
     #Show image
     createDir(app_root + image_path + qot.imagePath)
-    im.save(app_root + image_path + qot.imagePath)
+    im.save(app_root + image_path + qot.imagePath, optimize = True, quality = 70)
     print('writeQuotesOnImage done for id: ', qot.id)
+
+def writeQuotesOnImagePin(qot, param):   
+    #Create Image object
+    imageId = param[3] if param[3] else qot.imageId
+    if not isImageExist(imageId):
+        imageId = findOneImage().id
+    fileName = app_root + image_path + 'raw/' + str(imageId) + '.jpg'
+    im = Image.open(fileName)
+    rNum = qot.id % len(fonts)
+
+    fixed_height = 1500
+    height_percent = (fixed_height / float(im.size[1]))
+    width_size = int((float(im.size[0]) * float(height_percent)))
+    im = im.resize((width_size, fixed_height), Image.NEAREST)
+
+    left = 0
+    top = 0
+    right = 1000
+    bottom = 1500
+    
+    im = im.crop((left, top, right, bottom))
+    
+    print(fonts, rNum)
+    print(fonts[rNum])
+    font = app_root + fontDir + fonts[rNum]
+    print(font)
+    
+    fSize = param[0] if param[0] else qot.fontSize
+    wordWrap = param[1] if param[1] else qot.wordWrap
+    fontColor = param[2] if param[2] else qot.fontColor
+
+    #Update Value
+    qot.fontSize = fSize
+    qot.wordWrap = wordWrap
+    qot.fontColor = fontColor
+    qot.imageId = imageId
+    qot.save()
+    
+    fSize = int(fSize)
+    wordWrap = int(wordWrap) - 6
+    fSize = fSize + 55
+
+    fontH1 = ImageFont.truetype(font, fSize)
+    fontH2 = ImageFont.truetype(font, fSize + 3)
+
+    #Draw line
+    draw = ImageDraw.Draw(im)
+
+    w, h = im.size
+    
+    lines = textwrap.wrap(qot.quotes, width=wordWrap)
+    y_text = h/9 + 10
+    for line in lines:
+        width, height = fontH1.getsize(line)
+        #print(width, height)
+        if h > y_text + height*2:
+            draw.text(((w - width) / 2, y_text), line, font=fontH2, fill=fontColor)
+            y_text += height
+
+    width, height = fontH2.getsize(qot.author)
+
+    draw.text(((w / 2 - width/2) , y_text + height/4), qot.author, font=fontH1, fill=fontColor)
+    #draw.multiline_text((45, 75), txt, fill=(18, 19, 20), font=fontH1)
+
+    #Show image
+    createDir(app_root + image_path + qot.imagePathPin)
+    im.save(app_root + image_path + qot.imagePathPin, optimize = True, quality = 70)
+    print('writeQuotesOnImage done for id: ', qot.id)
+
 
 def findFontSize(Qlen, width):
     width = int(width)
@@ -141,6 +209,14 @@ def isImageExist(imageId):
         flag = True
     return flag
 
+def deleteImagePin(qot):
+    flag = False
+    fileName = app_root + image_path + qot.imagePathPin
+    if os.path.isfile(fileName):
+        print('file found')
+        os.remove(fileName)
+        flag = True
+    return flag
 
 def findOneImage():
     img = Images.objects.filter(isActive=1).filter(webformatHeight__gt=400).order_by('?').first()

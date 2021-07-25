@@ -127,11 +127,19 @@ def makeQuote(request):
     fontSize = request.POST.get('fontSize', None)
     fontColor = request.POST.get('fontColor', None)
     imageId = request.POST.get('imageId', None)
+    isPin = request.POST.get('isPin')
     param = (fontSize, wordWrap, fontColor, imageId)
+    print('id : ', id)
     quote = None
     if id != None:
         quote = Quotes.objects.filter(id=id).filter(isUpdated=1).first()
-        if quote != None:
+        if quote:
+            if isPin:
+                quote.isPin = isPin
+                utils.writeQuotesOnImagePin(quote, param)
+            else:
+                quote.isPin = 0
+                utils.deleteImagePin(quote)
             utils.writeQuotesOnImage(quote, param)      
     return redirect('/wp-admin/list/0/1?isSchd=0')
 

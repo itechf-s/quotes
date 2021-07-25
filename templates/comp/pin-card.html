@@ -1,0 +1,23 @@
+{% load static %}
+<div class="card-group mt-3 mb-3 ms-1 me-1">
+{% for quote in pinQuotes %}
+  <div class="card mb-1 ms-1 me-1">
+    <a href="{{urlPrefix}}/quotes/{{quote.quotes|truncatewords:5|slugify}}-by-{{quote.author|slugify}}-{{quote.id}}">
+      <img src="{% static './images/pin-lazy-img.png' %}" data-src="{% static 'images/' %}{{quote.imagePathPin}}" class="lazy" alt="{{quote.imageAlt}}" width="350" height="525">
+    </a>
+    <div class="card-body">
+      <span class="card-text text-center">{{quote.quotes}}</span>
+      <hr/>
+      <div class="row">
+      <a href="/{{quote.category|slugify}}-quotes" class="col-4 col-lg-5 btn btn-outline-dark btn-sm">{{quote.category}}</a>
+      <a href="/authors/{{quote.author|slugify}}-quotes" class="col-8 col-lg-7 text-end blockquote-footer link-dark">{{quote.author}}</a>
+      </div>      
+    </div>
+    {% include './social-share.html' %}
+  </div>
+    {% if forloop.counter|divisibleby:"5" %}
+      </div>
+      <div class="card-group mt-3 mb-3 ms-1 me-1">
+    {% endif %}
+  {% endfor %}
+</div>
