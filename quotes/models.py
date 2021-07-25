@@ -15,6 +15,7 @@ class Quotes(models.Model):
     isActive = models.IntegerField(default=0)
     isUpdated = models.IntegerField(default=0)
     isSchd = models.IntegerField(default=0)
+    isAuto = models.IntegerField(default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
     publishAt = models.DateTimeField(null=True, blank=True)

@@ -137,15 +137,16 @@ def makeQuote(request):
 
 @login_required(login_url='/mycms')
 def makeBulkQuotes(request):
-    rows = request.POST.get('rows', None)
+    rows = int(request.GET.get('rows', None))
     rows = rows if rows else 2
-    filterParam = {'isUpdated' : 1}
+    filterParam = {'isUpdated' : 1, 'isAuto': 0, 'isSchd': 0, 'isActive' : 0}
     quotes = Quotes.objects.filter(**filterParam).order_by('id')[:rows]
     if not quotes:
         update(request)
         quotes = Quotes.objects.filter(**filterParam).order_by('id')[:rows]
     for quote in quotes:
         param = ('', '', '', '')
+        quote.isAuto = 1
         utils.writeQuotesOnImage(quote, param)      
     return redirect('/wp-admin/list/0/1?isSchd=0')
 
