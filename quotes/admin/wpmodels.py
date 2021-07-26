@@ -28,6 +28,7 @@ class Images(models.Model):
     isDeleted = models.IntegerField(default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
+    isPin = models.IntegerField(default=0)
 
     def __str__(self):
         return self.previewURL

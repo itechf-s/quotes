@@ -10,8 +10,10 @@ def updateQuotesImage(quotesObj):
 
         imgText = textwrap.wrap(obj.quotes, width=45)[0]
         today = time.strftime('%Y%m%d')
-        obj.imagePath = today + "/" + slugify(imgText) + '.jpg'
+        obj.imagePath = today + '/' + slugify(imgText) + '-' + str(obj.id) + '.jpg'
+        obj.imagePathPin = today + '/' + slugify(imgText) + '-pin-' + str(obj.id) + '.jpg'
         obj.imageAlt = imgText
+        obj.authorSlug = slugify(obj.author)
         obj.title = textwrap.wrap(obj.quotes, width=100)[0]
         obj.isUpdated = 1
         img = utils.findOneImage()

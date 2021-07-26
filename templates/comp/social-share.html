@@ -1,10 +1,12 @@
+{% load static %}
 <div class="text-center shareon" data-title="{{quote.quotes}}" data-url="{{urlPrefix}}/quotes/{{quote.quotes|truncatewords:5|slugify}}-by-{{quote.author|slugify}}-{{quote.id}}">
   <div class="whatsapp"></div>
   <div class="facebook"></div>
-  <div class="pinterest"></div>
+  {% if quote.isPin == 1 %}
+  <div class="pinterest" data-media="{{urlPrefix}}{% static 'images/' %}{{quote.imagePathPin}}"></div>
+  {% endif %}
   <div class="twitter"></div>
   <div class="linkedin"></div>
   <div class="messenger"></div>
-  <div class="reddit"></div>
     {% comment %} <div class="ms-2 btn btn-outline-dark btn-sm fa fa-cloud-download" onclick="return JSShare.go(this)" data-type="twitter"></div>  {% endcomment %}
 </div>

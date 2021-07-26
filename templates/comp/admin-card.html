@@ -10,8 +10,7 @@
         body: formData,
         method: "post"
     });
-    //console.log(id)
-    window.location.reload()
+    delDiv('qCardDiv' + id);
    }
 //schedule quotes
    function schedule(id, isSchd) {
@@ -23,8 +22,7 @@
         body: formData,
         method: "post"
     });
-    //console.log(id)
-    window.location.reload()
+    delDiv('qCardDiv' + id);
    }
 
     function makeQuote(id) {
@@ -35,8 +33,7 @@
         body: formData,
         method: "post"
     });
-    //console.log(id)
-    window.location.reload()
+    delDiv('qCardDiv' + id);
     
    }
 
@@ -52,17 +49,39 @@
     window.location.reload()
     
   }
+
+  function delDiv(id) {
+    var myDiv = document.getElementById(id);
+    myDiv.remove();
+  }
+
+  function changeImg(id, imgId) {
+    var myImg = document.getElementById("raw-img-" + id);
+    var newImgId = document.getElementById(imgId).value;
+    myImg.src = "{% static 'images/raw/' %}" + newImgId + ".jpg"
+  }
    </script>
 <div class="card-group mt-3 mb-3 ms-1 me-1">
 {% for quote in quotes %}
-  <div class="card mb-1 ms-1 me-1">
-    <img src="{% static 'images/' %}{{quote.imagePath}}?v={% now 'u' %}" class="img-fluid rounded" alt="{{quote.imageAlt}}">
+  <div class="card mb-1 ms-1 me-1" id="qCardDiv{{quote.id}}">
+  <div class="row">
+  {% if quote.imagePath %}
+    <div class="col">
+      <img src="{% static 'images/' %}{{quote.imagePath}}?v={% now 'u' %}" class="img-fluid rounded" alt="{{quote.imageAlt}}">
+    </div>
+    {% if quote.isPin == 1 %}
+    <div class="col">
+        <img src="{% static 'images/' %}{{quote.imagePathPin}}?v={% now 'u' %}" class="img-fluid rounded" alt="{{quote.imageAlt}}">
+    </div>
+    {% endif %}
+  {% endif %}
+  </div>
     <div class="card-body">
       <p class="card-text text-center blockquote">{{quote.id}}. {{quote.quotes}}</p>
       <p class="text-end">{{quote.author}}</p>
       <p class="card-text">{{quote.category}}</p>
       <p class="card">{{quote.publishAt}}</p>
-      {% if quote.isActive == 0 and quote.isUpdated == 0 %}
+      {% if quote.isActive == 0 and quote.isUpdated == 0 or quote.isPin == 0 %}
       <p class="btn btn-outline-dark btn-sm" onclick="prepareQuotes({{quote.id}}, 1)">Prepare Quotes</p>
       {% endif %}
       {% if quote.isActive == 0 and quote.isUpdated == 1 %}

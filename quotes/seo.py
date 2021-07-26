@@ -14,7 +14,8 @@ def setMetas(qots, url):
         metas['og:site_name'] = 'BestRani'
         metas['og:title'] = qot.imageAlt
         metas['og:type'] = 'article'
-        desc = qot.desc if qot.desc != None else desc
+        desc = qot.quotes
+        desc = qot.desc if qot.desc else desc
         metas['description'] = desc
         metas['og:description'] = desc
         metas['og:url'] = url

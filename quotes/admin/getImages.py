@@ -13,6 +13,7 @@ API_KEY = env.get('security', 'PIXABAY_API_KEY')
 def saveImagesInDb(param):
     q = param['q']
     url = param['url']
+    isPin = param.get('isPin')
     id = ''
 
     if url:
@@ -41,8 +42,12 @@ def saveImagesInDb(param):
         try:
             iVal =  (None,) + tuple(hit.values()) + (1,)
             img = Images(*iVal)
-            img.save()
             utils.downloadImage(img.id, img.webformatURL)
+            if isPin:
+                img.isPin = isPin
+                print('pintrest selected')
+                utils.downloadImage('pin-' + str(img.id), img.largeImageURL)
+            img.save()
         except IntegrityError:
             print('error in unique key')
         

@@ -13,6 +13,7 @@ from bestrani import env
 imageRows = int(env.get('quotes', 'IMAGE_ROWS'))
 adminRows = int(env.get('quotes', 'ADMIN_ROWS'))
 createRows = int(env.get('quotes', 'CREATE_ROWS'))
+autoCreateRows = int(env.get('quotes', 'AUTO_CREATE_ROWS'))
 schdApiKey = env.get('security', 'SCHD_API_KEY')
 
 
@@ -58,7 +59,7 @@ def list(request, isActive, isUpdated):
     if isSchd:
         filterParam['isSchd'] = isSchd
 
-    quotes = Quotes.objects.filter(**filterParam).order_by('-id')[:adminRows]
+    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:adminRows]
     return render(request, 'list.html', {'quotes': quotes})
 
 @login_required(login_url='/mycms')
@@ -81,7 +82,7 @@ def activate(request):
 def runSchedule():
     filterParam = {'isActive' : 0, 'isUpdated' : 1, 'isSchd' : 1}
     quote = Quotes.objects.filter(**filterParam).order_by('id').first()
-    print(quote)
+    bulkQuotes(autoCreateRows)
     db.activateQuotes(quote)
 
 @login_required(login_url='/mycms')
@@ -127,27 +128,37 @@ def makeQuote(request):
     fontSize = request.POST.get('fontSize', None)
     fontColor = request.POST.get('fontColor', None)
     imageId = request.POST.get('imageId', None)
+    isPin = request.POST.get('isPin')
     param = (fontSize, wordWrap, fontColor, imageId)
+    print('id : ', id)
     quote = None
     if id != None:
         quote = Quotes.objects.filter(id=id).filter(isUpdated=1).first()
-        if quote != None:
+        if quote:
+            if isPin:
+                quote.isPin = isPin
+                utils.writeQuotesOnImagePin(quote, param)
+            else:
+                quote.isPin = 0
+                utils.deleteImagePin(quote)
             utils.writeQuotesOnImage(quote, param)      
     return redirect('/wp-admin/list/0/1?isSchd=0')
 
 @login_required(login_url='/mycms')
 def makeBulkQuotes(request):
-    rows = request.POST.get('rows', None)
+    rows = int(request.GET.get('rows', None))
     rows = rows if rows else 2
-    filterParam = {'isUpdated' : 1}
+    bulkQuotes(rows)
+    return redirect('/wp-admin/list/0/1?isSchd=0')
+
+def bulkQuotes(rows):
+    filterParam = {'isUpdated' : 1, 'isAuto': 0, 'isSchd': 0, 'isActive' : 0}
     quotes = Quotes.objects.filter(**filterParam).order_by('id')[:rows]
-    if not quotes:
-        update(request)
-        quotes = Quotes.objects.filter(**filterParam).order_by('id')[:rows]
+    process.updateQuotesImage(quotes)
     for quote in quotes:
         param = ('', '', '', '')
-        utils.writeQuotesOnImage(quote, param)      
-    return redirect('/wp-admin/list/0/1?isSchd=0')
+        quote.isAuto = 1
+        utils.writeQuotesOnImage(quote, param)     
 
 @login_required(login_url='/mycms')
 def chkLogout(request):

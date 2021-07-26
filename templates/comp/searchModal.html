@@ -1,6 +1,62 @@
 <!-- Button trigger modal -->
 {% comment %} <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#searchModal">Search Quotes</a> {% endcomment %}
+<script>
 
+function callByUrl(type) {
+  if(type === 'author'){
+    fetch('/authors-list?isActive=0',{method: 'GET'}).then(res => res.json()).then(res => {
+      localStorage.setItem('author', JSON.stringify(res));
+    }).catch(err => console.log(err));
+  };
+   if(type === 'category'){
+    fetch('/category-list?isActive=0',{method: 'GET'}).then(res => res.json()).then(res => {
+      localStorage.setItem('category', JSON.stringify(res));
+    }).catch(err => console.log(err));
+  }
+}
+function loadData() {
+  callByUrl('author');
+  callByUrl('category');
+}
+
+function myOnLoad() {
+  getAuthor();
+  getCategory()
+}
+
+function getAuthor(){
+  var authorList = localStorage.getItem('author');
+  if (authorList == null || authorList == undefined) {
+    callByUrl('author');
+    authorList = localStorage.getItem('author');
+  } else {
+    var myDiv = document.getElementById('loadData');
+    myDiv.remove();
+  }
+  authorList = JSON.parse(authorList);
+    var list = document.getElementById('author');
+    list.add(new Option('--Select--', ''));
+    for (key in authorList) {
+      var author = authorList[key].author;
+      list.add(new Option(author, author));
+    }
+}
+function getCategory(){
+  var categoryList = localStorage.getItem('category');
+  if (categoryList == null || categoryList == undefined) {
+    callByUrl('category');
+    categoryList = localStorage.getItem('category');
+  }
+  categoryList = JSON.parse(categoryList);
+    var list = document.getElementById('category');
+    list.add(new Option('--Select--', ''));
+    for (key in categoryList) {
+      var category = categoryList[key].category;
+      list.add(new Option(category, category));
+    }
+}
+window.addEventListener('load', myOnLoad);
+</script>
 <!-- Modal -->
 <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -9,6 +65,7 @@
         <h5 class="modal-title" id="searchModalLabel">Search Quotes About </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <div id='loadData' onclick="loadData()" class="btn btn-primary">Load Data...</div>
       <form method="GET" action="/wp-admin/list/0/0">
       <div class="modal-body">
         <div class="mb-3">
@@ -20,12 +77,14 @@
           <input type="text" class="form-control" name="quotes" id="quotes" placeholder="Quotes">
         </div>
         <div class="mb-3">
-          <label for="category" class="form-label">Category</label>
-          <input type="text" class="form-control" name="category" id="category" placeholder="Category">
+          <label for="category" class="form-label">Categories</label>
+          <select class="form-select" aria-label="Get categorys" id="category" name="category">
+        </select>
         </div>
         <div class="mb-3">
           <label for="author" class="form-label">Authors</label>
-          <input type="text" class="form-control" name="author" id="author" placeholder="Authors">
+          <select class="form-select" aria-label="Get authors" id="author" name="author">
+        </select>
         </div>
       </div>
       <div class="modal-footer">
