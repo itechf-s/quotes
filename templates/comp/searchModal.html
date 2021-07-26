@@ -1,62 +1,6 @@
 <!-- Button trigger modal -->
 {% comment %} <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#searchModal">Search Quotes</a> {% endcomment %}
-<script>
 
-function callByUrl(type) {
-  if(type === 'author'){
-    fetch('/authors-list?isActive=0',{method: 'GET'}).then(res => res.json()).then(res => {
-      localStorage.setItem('author', JSON.stringify(res));
-    }).catch(err => console.log(err));
-  };
-   if(type === 'category'){
-    fetch('/category-list?isActive=0',{method: 'GET'}).then(res => res.json()).then(res => {
-      localStorage.setItem('category', JSON.stringify(res));
-    }).catch(err => console.log(err));
-  }
-}
-function loadData() {
-  callByUrl('author');
-  callByUrl('category');
-}
-
-function myOnLoad() {
-  getAuthor();
-  getCategory()
-}
-
-function getAuthor(){
-  var authorList = localStorage.getItem('author');
-  if (authorList == null || authorList == undefined) {
-    callByUrl('author');
-    authorList = localStorage.getItem('author');
-  } else {
-    var myDiv = document.getElementById('loadData');
-    myDiv.remove();
-  }
-  authorList = JSON.parse(authorList);
-    var list = document.getElementById('author');
-    list.add(new Option('--Select--', ''));
-    for (key in authorList) {
-      var author = authorList[key].author;
-      list.add(new Option(author, author));
-    }
-}
-function getCategory(){
-  var categoryList = localStorage.getItem('category');
-  if (categoryList == null || categoryList == undefined) {
-    callByUrl('category');
-    categoryList = localStorage.getItem('category');
-  }
-  categoryList = JSON.parse(categoryList);
-    var list = document.getElementById('category');
-    list.add(new Option('--Select--', ''));
-    for (key in categoryList) {
-      var category = categoryList[key].category;
-      list.add(new Option(category, category));
-    }
-}
-window.addEventListener('load', myOnLoad);
-</script>
 <!-- Modal -->
 <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -84,7 +28,7 @@ window.addEventListener('load', myOnLoad);
         <div class="mb-3">
           <label for="author" class="form-label">Authors</label>
           <select class="form-select" aria-label="Get authors" id="author" name="author">
-        </select>
+          </select>
         </div>
       </div>
       <div class="modal-footer">

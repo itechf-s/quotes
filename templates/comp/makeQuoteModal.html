@@ -1,6 +1,6 @@
 {% load static %}
 <!-- Button trigger modal -->
-<p class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#mqModal{{quote.id}}">
+<p class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#mqModal{{quote.id}}" onclick="getImage({{quote.id}});">
   Make Quote
 </p>
 
@@ -29,8 +29,12 @@
         <div class="mb-3">
           <div class="row">
             <div class="col">
-              <label for="imageId" class="form-label">Image Id</label>
-              <input type="number" class="form-control" id="imageId-{{quote.imageId}}" name="imageId" value="{{quote.imageId}}" placeholder="Image Id" onchange="changeImg({{quote.imageId}}, this.id)">
+              <label for="image" class="form-label">Image</label>
+              <select class="form-select" aria-label="Get Image" id="imageId-{{quote.id}}" name="imageId" onchange="changeImg({{quote.imageId}}, this.id)">
+              <option value="{{quote.imageId}}" selected>{{quote.imageId}}</option>
+              </select>
+              <input type="hidden" id="hImageId-{{quote.id}}" value="{{quote.imageId}}"/>
+              <label class="form-label" id="imageTags-{{quote.id}}"></label>
             </div>
             <div class="col">
               <img id="raw-img-{{quote.imageId}}" src="{% static 'images/raw/' %}{{quote.imageId}}.jpg" width="150" height="100" class="img-fluid rounded">

@@ -16,6 +16,7 @@ urlpatterns = [
     path('authors/<slug:authorSlug>-quotes',views.author, name='author'),
     path('authors-list',views.authorsList, name='authorsList'),
     path('category-list',views.categoryList, name='categoryList'),
+    path('image-list',views.imageList, name='imageList'),
     path('quotes/<slug:quotesSlug>-<int:id>',views.details, name='details'),
     path('search',views.search, name='search'),
     path('mycms',views.showLogin, name='login'),
