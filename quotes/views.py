@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 from quotes.models import Quotes
@@ -35,6 +36,26 @@ def author(request, authorSlug):
     url = urlPrefix + '/authors/' + authorSlug + '-quotes'
     metas = seo.setMetas(quotes, url)
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+
+def authorsList(request):
+    isActive = request.GET.get('isActive', None)
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now()}
+    if isActive == '0':
+        filterParam.pop('isActive')
+        filterParam.pop('publishAt__lt')
+    authors = Quotes.objects.values('author').filter(**filterParam).order_by('author').distinct()
+    aList = list(authors)
+    return JsonResponse(aList, safe=False)
+
+def categoryList(request):
+    isActive = request.GET.get('isActive', None)
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now()}
+    if isActive == '0':   
+        filterParam.pop('isActive')
+        filterParam.pop('publishAt__lt')
+    category = Quotes.objects.values('category').filter(**filterParam).order_by('category').distinct()
+    cList = list(category)
+    return JsonResponse(cList, safe=False)
 
 def details(request, quotesSlug, id):
     quote1 = Quotes.objects.filter(id=id).filter(publishAt__lt = timezone.now()).filter(isActive=1).first()
