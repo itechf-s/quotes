@@ -137,8 +137,7 @@ def writeQuotesOnImagePin(qot, param):
     print('writeQuotesOnImage done for id: ', qot.id)
 
 
-def findFontSize(Qlen, width):
-    width = int(width)
+def findFontSize(Qlen):
     wordWrap = 38
     fontSize = 11
     for len, fontWrap in fontAndWordwrap.items():

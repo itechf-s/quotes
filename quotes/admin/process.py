@@ -17,7 +17,7 @@ def updateQuotesImage(quotesObj):
         obj.title = textwrap.wrap(obj.quotes, width=100)[0]
         obj.isUpdated = 1
         img = utils.findOneImage()
-        fontPlusWrap = utils.findFontSize(obj.quotes.__len__(), img.webformatWidth)
+        fontPlusWrap = utils.findFontSize(obj.quotes.__len__())
         obj.fontSize = fontPlusWrap[0]
         obj.wordWrap = fontPlusWrap[1]
         obj.rawImage = img.previewURL
