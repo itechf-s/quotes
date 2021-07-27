@@ -50,7 +50,6 @@ def downloadImage(q, id, isPin):
             utils.downloadImage(img.id, img.webformatURL)
             if isPin:
                 img.isPin = isPin
-                print('pintrest selected')
                 utils.downloadImage('pin-' + str(img.id), img.largeImageURL)
                 img.save()
         except IntegrityError:

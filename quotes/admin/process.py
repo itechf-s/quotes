@@ -22,5 +22,5 @@ def updateQuotesImage(quotesObj):
         obj.wordWrap = fontPlusWrap[1]
         obj.rawImage = img.previewURL
         obj.fontColor = 'white'
-        obj.imageId=img.id
+        obj.imageId = img.id
         obj.save()
