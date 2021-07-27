@@ -13,6 +13,8 @@ from bestrani import env
 imageRows = int(env.get('quotes', 'IMAGE_ROWS'))
 adminRows = int(env.get('quotes', 'ADMIN_ROWS'))
 createRows = int(env.get('quotes', 'CREATE_ROWS'))
+autoPinMaxChar = int(env.get('quotes', 'AUTO_PIN_MAX_CHAR'))
+pinMod = int(env.get('quotes', 'PIN_MOD'))
 autoCreateRows = int(env.get('quotes', 'AUTO_CREATE_ROWS'))
 schdApiKey = env.get('security', 'SCHD_API_KEY')
 
@@ -152,13 +154,16 @@ def makeBulkQuotes(request):
     return redirect('/wp-admin/list/0/1?isSchd=0')
 
 def bulkQuotes(rows):
-    filterParam = {'isUpdated' : 1, 'isAuto': 0, 'isSchd': 0, 'isActive' : 0}
+    filterParam = {'isUpdated' : 0, 'isAuto': 0, 'isSchd': 0, 'isActive' : 0}
     quotes = Quotes.objects.filter(**filterParam).order_by('id')[:rows]
     process.updateQuotesImage(quotes)
     for quote in quotes:
         param = ('', '', '', '')
         quote.isAuto = 1
-        utils.writeQuotesOnImage(quote, param)     
+        utils.writeQuotesOnImage(quote, param)
+        if quote.id % pinMod == 0 and quote.quotes.__len__() < autoPinMaxChar:
+            quote.isPin = 1
+            utils.writeQuotesOnImagePin(quote, param)
 
 @login_required(login_url='/mycms')
 def chkLogout(request):

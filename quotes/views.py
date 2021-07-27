@@ -1,3 +1,4 @@
+from quotes.admin.wpmodels import Images
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
@@ -45,6 +46,15 @@ def authorsList(request):
         filterParam.pop('publishAt__lt')
     authors = Quotes.objects.values('author').filter(**filterParam).order_by('author').distinct()
     aList = list(authors)
+    return JsonResponse(aList, safe=False)
+
+def imageList(request):
+    isActive = request.GET.get('isActive', None)
+    filterParam = {'isActive' : 1}
+    if isActive == '0':
+        filterParam.pop('isActive')
+    imgs = Images.objects.values('id','tags').filter(**filterParam).order_by('id')
+    aList = list(imgs)
     return JsonResponse(aList, safe=False)
 
 def categoryList(request):

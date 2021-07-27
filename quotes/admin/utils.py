@@ -137,8 +137,7 @@ def writeQuotesOnImagePin(qot, param):
     print('writeQuotesOnImage done for id: ', qot.id)
 
 
-def findFontSize(Qlen, width):
-    width = int(width)
+def findFontSize(Qlen):
     wordWrap = 38
     fontSize = 11
     for len, fontWrap in fontAndWordwrap.items():
@@ -190,8 +189,7 @@ def downloadImage(id, url):
     opener.addheaders=[('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1941.0 Safari/537.36')]
     urllib.request.install_opener(opener)
     fileName = app_root + image_path + 'raw/' + str(id) + '.jpg'
-    img = urllib.request.urlretrieve(url, fileName)
-    print(img)
+    urllib.request.urlretrieve(url, fileName)
 
 def createDir(dirName):
     #fullPath = os.path.join(app_root, dirName)
@@ -219,12 +217,11 @@ def deleteImagePin(qot):
     return flag
 
 def findOneImage():
-    img = Images.objects.filter(isActive=1).filter(webformatHeight__gt=400).order_by('?').first()
-    if not img:
-        img = Images.objects.filter(id=1).first()
-    if isImageExist(img.id):
-        return img
-    else:
-        img.isDeleted = 1
-        img.save()
-        findOneImage()
+    img = Images.objects.filter(isActive=1).filter(isDeleted=0).order_by('?').first()
+    if img:
+        if isImageExist(img.id):
+            return img
+        else:
+            img.isDeleted = 1
+            img.save()
+            findOneImage()

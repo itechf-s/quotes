@@ -1,66 +1,8 @@
 {% load static %}
 
-  <script>
-   function activate(id, isActive) {
-    let formData = new FormData();
-      formData.append('id', id);
-      formData.append('isActive', isActive);
-      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-      fetch("/wp-admin/activate",{
-        body: formData,
-        method: "post"
-    });
-    delDiv('qCardDiv' + id);
-   }
-//schedule quotes
-   function schedule(id, isSchd) {
-    let formData = new FormData();
-      formData.append('id', id);
-      formData.append('isSchd', isSchd);
-      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-      fetch("/wp-admin/activate",{
-        body: formData,
-        method: "post"
-    });
-    delDiv('qCardDiv' + id);
-   }
+<input type="hidden" id="hCsrf" value="{{ csrf_token }}"/>
+<input type="hidden" id="hRawImgPrefix" value="{% static 'images/raw/' %}"/>
 
-    function makeQuote(id) {
-    let formData = new FormData();
-      formData.append('id', id);
-      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-      fetch("/wp-admin/make-quote",{
-        body: formData,
-        method: "post"
-    });
-    delDiv('qCardDiv' + id);
-    
-   }
-
-    function prepareQuotes(id) {
-    let formData = new FormData();
-      formData.append('id', id);
-      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-      fetch("/wp-admin/update",{
-        body: formData,
-        method: "post"
-    });
-    //console.log(id)
-    window.location.reload()
-    
-  }
-
-  function delDiv(id) {
-    var myDiv = document.getElementById(id);
-    myDiv.remove();
-  }
-
-  function changeImg(id, imgId) {
-    var myImg = document.getElementById("raw-img-" + id);
-    var newImgId = document.getElementById(imgId).value;
-    myImg.src = "{% static 'images/raw/' %}" + newImgId + ".jpg"
-  }
-   </script>
 <div class="card-group mt-3 mb-3 ms-1 me-1">
 {% for quote in quotes %}
   <div class="card mb-1 ms-1 me-1" id="qCardDiv{{quote.id}}">
@@ -110,3 +52,4 @@
 </div>
 {% include './searchModal.html' %}
 {% include './importImageModal.html' %}
+<script src="{% static './js/wpscript.js' %}"></script>
