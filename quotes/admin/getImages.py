@@ -15,16 +15,20 @@ def saveImagesInDb(param):
     url = param['url']
     isPin = param.get('isPin')
     id = ''
+    urlList = url.split('\r\n')
 
-    if url:
-        id = re.findall('\d+', url)[0]
-        q=''
-        print(id)
+    if urlList:
+        for urlTxt in urlList:
+            id = re.findall('\d+', urlTxt)[0]
+            q=''
+            downloadImage('', id, isPin)
     elif q:
-        print(q)
+        downloadImage(q, '', isPin)
     else:
         print('Param not Found')
 
+def downloadImage(q, id, isPin):
+    print(q, id, isPin)
     image = Image(API_KEY)
     ims = image.search(q=q,
                 id=id,
@@ -42,12 +46,12 @@ def saveImagesInDb(param):
         try:
             iVal =  (None,) + tuple(hit.values()) + (1,)
             img = Images(*iVal)
+            img.save()
             utils.downloadImage(img.id, img.webformatURL)
             if isPin:
                 img.isPin = isPin
                 print('pintrest selected')
                 utils.downloadImage('pin-' + str(img.id), img.largeImageURL)
-            img.save()
+                img.save()
         except IntegrityError:
             print('error in unique key')
-        
