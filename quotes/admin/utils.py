@@ -11,6 +11,10 @@ image_path = env.get('quotes', 'IMG_DIR')
 fontDir = env.get('quotes', 'FONT_DIR')
 fonts = env.get('quotes', 'FONT_LIST').split(',')
 fontAndWordwrap = eval(env.get('quotes', 'FONT_AND_WORDWRAP'))
+qHeight = int(env.get('quotes', 'HEIGHT'))
+qWidth = int(env.get('quotes', 'WIDTH'))
+pinHeight = int(env.get('quotes', 'PIN_HEIGHT'))
+pinWidth = int(env.get('quotes', 'PIN_WIDTH'))
     
 def writeQuotesOnImage(qot, param):   
     #Create Image object
@@ -18,13 +22,23 @@ def writeQuotesOnImage(qot, param):
     if not isImageExist(imageId):
         imageId = findOneImage().id
     fileName = app_root + image_path + 'raw/' + str(imageId) + '.jpg'
+
     im = Image.open(fileName)
     rNum = qot.id % len(fonts)
+
+    fixed_height = qHeight
+    height_percent = (fixed_height / float(im.size[1]))
+    width_size = int((float(im.size[0]) * float(height_percent)))
+    im = im.resize((width_size, fixed_height), Image.NEAREST)
+
+    left = 0
+    top = 0
+    right = qWidth
+    bottom = qHeight
+
+    im = im.crop((left, top, right, bottom))
     
-    print(fonts, rNum)
-    print(fonts[rNum])
     font = app_root + fontDir + fonts[rNum]
-    print(font)
     
     fSize = param[0] if param[0] else qot.fontSize
     wordWrap = param[1] if param[1] else qot.wordWrap
@@ -77,22 +91,19 @@ def writeQuotesOnImagePin(qot, param):
     im = Image.open(fileName)
     rNum = qot.id % len(fonts)
 
-    fixed_height = 1500
+    fixed_height = pinHeight
     height_percent = (fixed_height / float(im.size[1]))
     width_size = int((float(im.size[0]) * float(height_percent)))
     im = im.resize((width_size, fixed_height), Image.NEAREST)
 
     left = 0
     top = 0
-    right = 1000
-    bottom = 1500
+    right = pinWidth
+    bottom = pinHeight
     
     im = im.crop((left, top, right, bottom))
     
-    print(fonts, rNum)
-    print(fonts[rNum])
     font = app_root + fontDir + fonts[rNum]
-    print(font)
     
     fSize = param[0] if param[0] else qot.fontSize
     wordWrap = param[1] if param[1] else qot.wordWrap
