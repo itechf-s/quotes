@@ -1,6 +1,7 @@
 //activate, publish, draft quotes
 var csrfToken = document.getElementById('hCsrf').value;
 var rawImgPrefix = document.getElementById('hRawImgPrefix').value;
+var ver = document.getElementById('hVer').value;
 
 function activate(id, isActive) {
 let formData = new FormData();
@@ -65,18 +66,18 @@ myImg.src = rawImgPrefix + newImgId + ".jpg"
    
 function callByUrl(type) {
   if(type === 'author'){
-    fetch('/authors-list?isActive=0',{method: 'GET'}).then(res => res.json()).then(res => {
-      sessionStorage.setItem('author', JSON.stringify(res));
+    fetch('/authors-list?isActive=0&v=' + ver ,{method: 'GET'}).then(res => res.json()).then(res => {
+      localStorage.setItem('author', JSON.stringify(res));
     }).catch(err => console.log(err));
   };
    if(type === 'category'){
-    fetch('/category-list?isActive=0',{method: 'GET'}).then(res => res.json()).then(res => {
-      sessionStorage.setItem('category', JSON.stringify(res));
+    fetch('/category-list?isActive=0&v=' + ver, {method: 'GET'}).then(res => res.json()).then(res => {
+      localStorage.setItem('category', JSON.stringify(res));
     }).catch(err => console.log(err));
   }
    if(type === 'image'){
-    fetch('/image-list', {method: 'GET'}).then(res => res.json()).then(res => {
-      sessionStorage.setItem('image', JSON.stringify(res));
+    fetch('/image-list?v=' + ver, {method: 'GET'}).then(res => res.json()).then(res => {
+      localStorage.setItem('image', JSON.stringify(res));
     }).catch(err => console.log(err));
   }
 }
@@ -84,6 +85,7 @@ function loadData() {
   callByUrl('author');
   callByUrl('category');
   callByUrl('image');
+  window.location.reload();
 }
 
 function myOnLoad() {
@@ -92,10 +94,10 @@ function myOnLoad() {
 }
 
 function getAuthor(){
-  var authorList = sessionStorage.getItem('author');
+  var authorList = localStorage.getItem('author');
   if (authorList == null || authorList == undefined) {
     callByUrl('author');
-    authorList = sessionStorage.getItem('author');
+    authorList = localStorage.getItem('author');
   } else {
     var myDiv = document.getElementById('loadData');
     myDiv.remove();
@@ -109,10 +111,10 @@ function getAuthor(){
     }
 }
 function getCategory(){
-  var categoryList = sessionStorage.getItem('category');
+  var categoryList = localStorage.getItem('category');
   if (categoryList == null || categoryList == undefined) {
     callByUrl('category');
-    categoryList = sessionStorage.getItem('category');
+    categoryList = localStorage.getItem('category');
   }
   categoryList = JSON.parse(categoryList);
     var list = document.getElementById('category');
@@ -123,10 +125,10 @@ function getCategory(){
     }
 }
 function getImage(id){
-  var imageList = sessionStorage.getItem('image');
+  var imageList = localStorage.getItem('image');
   if (imageList == null || imageList == undefined) {
     callByUrl('image');
-    imageList = sessionStorage.getItem('image');
+    imageList = localStorage.getItem('image');
   }
   imageList = JSON.parse(imageList);
     var list = document.getElementById('imageId-' + id);
@@ -134,11 +136,12 @@ function getImage(id){
     for (key in imageList) {
       var imageId = imageList[key].id;
       var tags = imageList[key].tags;
+      tags = tags.substring(0, 15);
       document.getElementById('imageTags-' + id).innerHTML = tags;
       if(imageId == oldImageId) {
-        list.add(new Option(imageId, imageId, false, true));
+        list.add(new Option(imageId + '-' + tags, imageId, false, true));
       } else {
-        list.add(new Option(imageId, imageId));
+        list.add(new Option(imageId + '-' + tags, imageId));
       }
     }
 }

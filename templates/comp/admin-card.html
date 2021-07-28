@@ -2,6 +2,7 @@
 
 <input type="hidden" id="hCsrf" value="{{ csrf_token }}"/>
 <input type="hidden" id="hRawImgPrefix" value="{% static 'images/raw/' %}"/>
+<input type="hidden" id="hVer" value="{% now 'u' %}"/>
 
 <div class="card-group mt-3 mb-3 ms-1 me-1">
 {% for quote in quotes %}
