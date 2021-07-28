@@ -1,7 +1,7 @@
 {% load static %}
 <div class="container mt-3">
   <div class="card">
-      <img src="{% static './images/lazy-img.png' %}" data-src="{% static 'images/' %}{{quote1.imagePath}}" alt="{{quote1.imageAlt}}"  width="640" height="360">
+      <img class="lazy" src="{% static './images/lazy-img.png' %}" data-src="{% static 'images/' %}{{quote1.imagePath}}" alt="{{quote1.imageAlt}}"  width="640" height="360">
     <div class="card-body">
       {% comment %} <div class="row">
       <div class="col">
