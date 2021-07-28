@@ -66,12 +66,12 @@ myImg.src = rawImgPrefix + newImgId + ".jpg"
 function callByUrl(type) {
   if(type === 'author'){
     fetch('/authors-list?isActive=0',{method: 'GET'}).then(res => res.json()).then(res => {
-      localStorage.setItem('author', JSON.stringify(res));
+      sessionStorage.setItem('author', JSON.stringify(res));
     }).catch(err => console.log(err));
   };
    if(type === 'category'){
     fetch('/category-list?isActive=0',{method: 'GET'}).then(res => res.json()).then(res => {
-      localStorage.setItem('category', JSON.stringify(res));
+      sessionStorage.setItem('category', JSON.stringify(res));
     }).catch(err => console.log(err));
   }
    if(type === 'image'){
@@ -92,10 +92,10 @@ function myOnLoad() {
 }
 
 function getAuthor(){
-  var authorList = localStorage.getItem('author');
+  var authorList = sessionStorage.getItem('author');
   if (authorList == null || authorList == undefined) {
     callByUrl('author');
-    authorList = localStorage.getItem('author');
+    authorList = sessionStorage.getItem('author');
   } else {
     var myDiv = document.getElementById('loadData');
     myDiv.remove();
@@ -109,10 +109,10 @@ function getAuthor(){
     }
 }
 function getCategory(){
-  var categoryList = localStorage.getItem('category');
+  var categoryList = sessionStorage.getItem('category');
   if (categoryList == null || categoryList == undefined) {
     callByUrl('category');
-    categoryList = localStorage.getItem('category');
+    categoryList = sessionStorage.getItem('category');
   }
   categoryList = JSON.parse(categoryList);
     var list = document.getElementById('category');
