@@ -21,19 +21,33 @@ def index(request):
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, 'urlPrefix' : urlPrefix, 'pinQuotes': pinQuotes})
 
 def category(request, category):
+    print(category)
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'category' : category}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    if not pinQuotes:
+        filterParam.pop('category')
+        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     filterParam['isPin'] = 0
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    if not quotes:
+        filterParam.pop('category')
+        quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+
     url = urlPrefix + '/' + category + '-quotes'
     metas = seo.setMetas(quotes, url)
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
 
 def author(request, authorSlug):
-    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1}
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'authorSlug' : authorSlug}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    if not pinQuotes:
+        filterParam.pop('authorSlug')
+        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     filterParam['isPin'] = 0
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    if not quotes:
+        filterParam.pop('authorSlug')
+        quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     url = urlPrefix + '/authors/' + authorSlug + '-quotes'
     metas = seo.setMetas(quotes, url)
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
