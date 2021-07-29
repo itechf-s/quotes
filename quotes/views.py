@@ -12,7 +12,7 @@ urlPrefix = env.get('general','URL_PREFIX')
 
 print(urlPrefix)
 def index(request):
-    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1}
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 1}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     filterParam['isPin'] = 0
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
@@ -22,7 +22,7 @@ def index(request):
 
 def category(request, category):
     print(category)
-    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'category' : category}
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'category' : category, 'locale' : 1}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     if not pinQuotes:
         filterParam.pop('category')
@@ -38,7 +38,7 @@ def category(request, category):
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
 
 def author(request, authorSlug):
-    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'authorSlug' : authorSlug}
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 1, 'authorSlug' : authorSlug}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     if not pinQuotes:
         filterParam.pop('authorSlug')
@@ -54,7 +54,7 @@ def author(request, authorSlug):
 
 def authorsList(request):
     isActive = request.GET.get('isActive', None)
-    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now()}
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'locale' : 1}
     if isActive == '0':
         filterParam.pop('isActive')
         filterParam.pop('publishAt__lt')
@@ -83,7 +83,7 @@ def categoryList(request):
 
 def details(request, quotesSlug, id):
     quote1 = Quotes.objects.filter(id=id).filter(publishAt__lt = timezone.now()).filter(isActive=1).first()
-    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1}
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 1}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     filterParam['isPin'] = 0
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
@@ -99,7 +99,7 @@ def showLogin(request):
 def search(request):
     q = request.GET.get('q', None)
 
-    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now()}
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'locale' : 1}
     if q:
         filterParam['category__istartswith'] = q
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
