@@ -42,19 +42,16 @@
           </div>
         </div>
         <div class="mb-3">
-          <select class="form-select" aria-label="Default select example" id="fontColor" name="fontColor">
-          <option value="{{quote.fontColor}}" selected>{{quote.fontColor}}</option>
-          <option value="red">Red</option>
-          <option value="black">Black</option>
-          <option value="white">White</option>
-          <option value="yellow">Yellow</option>
-          <option value="orange">Orange</option>
-          <option value="green">Green</option>
-          <option value="blue">Blue</option>
-          <option value="indigo">Indigo</option>
-          <option value="violet">Violet</option>
-          <option value="purple">Purple</option>
-        </select>
+         <input class="form-check-input" type="radio" name="fontColor" id="fontColorRed" value="red" {% if quote.fontColor == 'red' %} checked {% endif %}>
+         <label class="form-check-label" for="fontColorRed">Red</label>
+         <input class="form-check-input" type="radio" name="fontColor" id="fontColorBlack" value="black" {% if quote.fontColor == 'black' %} checked {% endif %}>
+         <label class="form-check-label" for="fontColorBlack">Black</label>
+         <input class="form-check-input" type="radio" name="fontColor" id="fontColorWhite" value="white" {% if quote.fontColor == 'white' %} checked {% endif %}>
+         <label class="form-check-label" for="fontColorWhite">White</label>
+         <input class="form-check-input" type="radio" name="fontColor" id="fontColorBlue" value="blue" {% if quote.fontColor == 'blue' %} checked {% endif %}>
+         <label class="form-check-label" for="fontColorBlue">Blue</label>
+         <input class="form-check-input" type="radio" name="fontColor" id="fontColorGreen" value="green" {% if quote.fontColor == 'green' %} checked {% endif %}>
+         <label class="form-check-label" for="fontColorGreen">Green</label>
         </div>
         <div class="mb-3">
           <input class="form-check-input" type="checkbox" {% if quote.isPin == 1 %} checked {% endif %} value="1" id="isPin" name='isPin'>
