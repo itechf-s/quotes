@@ -24,12 +24,15 @@ def writeQuotesOnImage(qot, param):
     fileName = app_root + image_path + 'raw/' + str(imageId) + '.jpg'
 
     im = Image.open(fileName)
+    print(im.size)
     rNum = qot.id % len(fonts)
 
     fixed_height = qHeight
     height_percent = (fixed_height / float(im.size[1]))
     width_size = int((float(im.size[0]) * float(height_percent)))
-    im = im.resize((width_size, fixed_height), Image.NEAREST)
+    if width_size < qWidth:
+        width_size = qWidth
+    im = im.resize((width_size, fixed_height), Image.HAMMING)
 
     left = 0
     top = 0
@@ -94,6 +97,8 @@ def writeQuotesOnImagePin(qot, param):
     fixed_height = pinHeight
     height_percent = (fixed_height / float(im.size[1]))
     width_size = int((float(im.size[0]) * float(height_percent)))
+    if width_size < qWidth:
+        width_size = qWidth
     im = im.resize((width_size, fixed_height), Image.NEAREST)
 
     left = 0
