@@ -3,6 +3,8 @@ from bestrani import env
 imgPrefix = env.get('quotes', 'IMG_PREFIX')
 imgDir = env.get('quotes', 'IMG_DIR')
 seoDec = env.get('quotes', 'SEO_DESC')
+qHeight = int(env.get('quotes', 'HEIGHT'))
+qWidth = int(env.get('quotes', 'WIDTH'))
 
 def setMetas(qots, url):
     desc = seoDec
@@ -21,8 +23,8 @@ def setMetas(qots, url):
         metas['og:url'] = url
         metas['og:image'] = imgPath
         metas['og:image:type'] = 'image/jpeg'
-        metas['og:image:width'] = '200'
-        metas['og:image:height'] = '200'
+        metas['og:image:width'] = qWidth
+        metas['og:image:height'] = qHeight
         metas['og:locale'] = 'en_US'
         metas['og:locale:alternate'] = 'en_IN'    
         metas['twitter:card'] = 'summary'       
