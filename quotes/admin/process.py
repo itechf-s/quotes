@@ -7,19 +7,25 @@ from quotes.admin import utils
 def updateQuotesImage(quotesObj):
 
     for obj in quotesObj:
-
-        imgText = textwrap.wrap(obj.quotes, width=45)[0]
+        
+        if not obj.quotesTxt:
+            obj.quotesTxt = obj.quotes
+        imgText = textwrap.wrap(obj.quotesTxt, width=45)[0]
         today = time.strftime('%Y%m%d')
         obj.imagePath = today + '/' + slugify(imgText) + '-' + str(obj.id) + '.jpg'
         obj.imagePathPin = today + '/' + slugify(imgText) + '-pin-' + str(obj.id) + '.jpg'
         obj.imageAlt = imgText
-        obj.authorSlug = slugify(obj.author)
-        obj.title = textwrap.wrap(obj.quotes, width=100)[0]
+        if not obj.authorSlug:
+            obj.authorSlug = slugify(obj.author)
+        if not obj.categorySlug:
+            obj.categorySlug = slugify(obj.category)
+        obj.title = textwrap.wrap(obj.quotesTxt, width=100)[0]
         obj.isUpdated = 1
         img = utils.findOneImage()
-        fontPlusWrap = utils.findFontSize(obj.quotes.__len__())
-        obj.fontSize = fontPlusWrap[0]
-        obj.wordWrap = fontPlusWrap[1]
+        fontObj = utils.findFont(obj)
+        obj.fontName = fontObj['name']
+        obj.fontSize = fontObj['size']
+        obj.wordWrap = fontObj['wrap']
         obj.rawImage = img.previewURL
         obj.fontColor = 'white'
         obj.imageId = img.id

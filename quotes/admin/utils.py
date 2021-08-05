@@ -9,7 +9,8 @@ from bestrani import env
 app_root = env.get('quotes', 'APP_ROOT')
 image_path = env.get('quotes', 'IMG_DIR')
 fontDir = env.get('quotes', 'FONT_DIR')
-fonts = env.get('quotes', 'FONT_LIST').split(',')
+fontExt = env.get('quotes', 'FONT_EXT')
+defaultFont = eval(env.get('quotes', 'DEFAULT_FONT'))
 fontAndWordwrap = eval(env.get('quotes', 'FONT_AND_WORDWRAP'))
 qHeight = int(env.get('quotes', 'HEIGHT'))
 qWidth = int(env.get('quotes', 'WIDTH'))
@@ -24,8 +25,6 @@ def writeQuotesOnImage(qot, param):
     fileName = app_root + image_path + 'raw/' + str(imageId) + '.jpg'
 
     im = Image.open(fileName)
-    print(im.size)
-    rNum = qot.id % len(fonts)
 
     fixed_height = qHeight
     height_percent = (fixed_height / float(im.size[1]))
@@ -41,13 +40,15 @@ def writeQuotesOnImage(qot, param):
 
     im = im.crop((left, top, right, bottom))
     
-    font = app_root + fontDir + fonts[rNum]
-    
+    qot.fontName = qot.fontName if qot.fontName else findFont(qot)['name']
+    fontName = param[4] if param[4] else qot.fontName
     fSize = param[0] if param[0] else qot.fontSize
     wordWrap = param[1] if param[1] else qot.wordWrap
     fontColor = param[2] if param[2] else qot.fontColor
 
+    font = app_root + fontDir + fontName + fontExt
     #Update Value
+    qot.fontName = fontName
     qot.fontSize = fSize
     qot.wordWrap = wordWrap
     qot.fontColor = fontColor
@@ -58,8 +59,8 @@ def writeQuotesOnImage(qot, param):
     wordWrap = int(wordWrap)
     if fSize == None or fSize < 15:
         fSize = 20
-    fontH1 = ImageFont.truetype(font, fSize)
-    fontH2 = ImageFont.truetype(font, fSize + 3)
+    fontH1 = ImageFont.truetype(font, fSize, layout_engine=ImageFont.LAYOUT_RAQM)
+    fontH2 = ImageFont.truetype(font, fSize + 3, layout_engine=ImageFont.LAYOUT_RAQM)
 
     #Draw line
     draw = ImageDraw.Draw(im)
@@ -92,7 +93,6 @@ def writeQuotesOnImagePin(qot, param):
         imageId = findOneImage().id
     fileName = app_root + image_path + 'raw/' + str(imageId) + '.jpg'
     im = Image.open(fileName)
-    rNum = qot.id % len(fonts)
 
     fixed_height = pinHeight
     height_percent = (fixed_height / float(im.size[1]))
@@ -108,13 +108,15 @@ def writeQuotesOnImagePin(qot, param):
     
     im = im.crop((left, top, right, bottom))
     
-    font = app_root + fontDir + fonts[rNum]
-    
+    qot.fontName = qot.fontName if qot.fontName else findFont(qot)['name']
+    fontName = param[4] if param[4] else qot.fontName
     fSize = param[0] if param[0] else qot.fontSize
     wordWrap = param[1] if param[1] else qot.wordWrap
     fontColor = param[2] if param[2] else qot.fontColor
 
+    font = app_root + fontDir + fontName + fontExt
     #Update Value
+    qot.fontName = fontName
     qot.fontSize = fSize
     qot.wordWrap = wordWrap
     qot.fontColor = fontColor
@@ -152,6 +154,23 @@ def writeQuotesOnImagePin(qot, param):
     im.save(app_root + image_path + qot.imagePathPin, optimize = True, quality = 70)
     print('writeQuotesOnImage done for id: ', qot.id)
 
+
+def findFont(qot):
+    wordWrap = 38
+    fontSize = 11
+    qLen = qot.quotes.__len__()
+    fontObj = {}
+    fontObj['name'] = defaultFont[qot.locale]
+    fontObj['size'] = fontSize
+    fontObj['wrap'] = wordWrap
+
+    for len, fontWrap in fontAndWordwrap.items():
+        if qLen <= len:
+            fontObj['size'] = fontWrap[0]
+            fontObj['wrap'] = fontWrap[1]
+            print('Quotes Obj : ', fontObj)
+            break
+    return fontObj
 
 def findFontSize(Qlen):
     wordWrap = 38

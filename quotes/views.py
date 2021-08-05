@@ -10,18 +10,16 @@ rows = int(env.get('quotes','ROWS'))
 pinRows = int(env.get('quotes','PIN_ROWS'))
 urlPrefix = env.get('general','URL_PREFIX')
 
-print(urlPrefix)
 def index(request):
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 1}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     filterParam['isPin'] = 0
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     url = urlPrefix + '/'
-    metas = seo.setMetas(quotes, url)
+    metas = seo.setMetas(pinQuotes, url)
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, 'urlPrefix' : urlPrefix, 'pinQuotes': pinQuotes})
 
 def category(request, category):
-    print(category)
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'category' : category, 'locale' : 1}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     if not pinQuotes:
@@ -34,7 +32,7 @@ def category(request, category):
         quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
 
     url = urlPrefix + '/' + category + '-quotes'
-    metas = seo.setMetas(quotes, url)
+    metas = seo.setMetas(pinQuotes, url)
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
 
 def author(request, authorSlug):
@@ -49,7 +47,7 @@ def author(request, authorSlug):
         filterParam.pop('authorSlug')
         quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     url = urlPrefix + '/authors/' + authorSlug + '-quotes'
-    metas = seo.setMetas(quotes, url)
+    metas = seo.setMetas(pinQuotes, url)
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
 
 def authorsList(request):
@@ -71,6 +69,10 @@ def imageList(request):
     aList = list(imgs)
     return JsonResponse(aList, safe=False)
 
+def fontList(request):
+    fonts = eval(env.get('quotes', 'FONT_LIST'))
+    return JsonResponse(fonts, safe=False)
+
 def categoryList(request):
     isActive = request.GET.get('isActive', None)
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now()}
@@ -90,6 +92,18 @@ def details(request, quotesSlug, id):
     quotes = Quotes.objects.filter(**filterParam).exclude(id=id).order_by('-publishAt')[:rows]
  
     url = urlPrefix + '/quotes/' + quotesSlug + '-' + str(id)
+    metas = seo.setMetas((quote1,), url)
+    return render(request, 'details.html', {'quotes': quotes, 'quote1' : quote1, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+
+def hindiDetails(request, quotesSlug, id):
+    quote1 = Quotes.objects.filter(id=id).filter(publishAt__lt = timezone.now()).filter(isActive=1).first()
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 2}
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    filterParam['isPin'] = 0
+    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    quotes = Quotes.objects.filter(**filterParam).exclude(id=id).order_by('-publishAt')[:rows]
+ 
+    url = urlPrefix + '/hindi/quotes/' + quotesSlug + '-' + str(id)
     metas = seo.setMetas((quote1,), url)
     return render(request, 'details.html', {'quotes': quotes, 'quote1' : quote1, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
 
@@ -123,3 +137,11 @@ def search(request):
     metas = seo.setMetas(quotes, url)
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix})
 
+def hindiHome(request):
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 2}
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    filterParam['isPin'] = 0
+    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    url = urlPrefix + '/hindi'
+    metas = seo.setMetas(pinQuotes, url)
+    return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, 'urlPrefix' : urlPrefix, 'pinQuotes': pinQuotes})

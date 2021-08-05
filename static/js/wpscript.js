@@ -80,11 +80,17 @@ function callByUrl(type) {
       localStorage.setItem('image', JSON.stringify(res));
     }).catch(err => console.log(err));
   }
+   if(type === 'font'){
+    fetch('/font-list?v=' + ver, {method: 'GET'}).then(res => res.json()).then(res => {
+      localStorage.setItem('font', JSON.stringify(res));
+    }).catch(err => console.log(err));
+  }
 }
 function loadData() {
   callByUrl('author');
   callByUrl('category');
   callByUrl('image');
+  callByUrl('font');
   window.location.reload();
 }
 
@@ -145,4 +151,43 @@ function getImage(id){
       }
     }
 }
+
+function getFont(id){
+  var localeObj = {1:'English', 2:'हिन्दी'};
+  var fontList = localStorage.getItem('font');
+  if (fontList == null || fontList == undefined) {
+    callByUrl('font');
+    fontList = localStorage.getItem('font');
+  }
+  fontList = JSON.parse(fontList);
+    var list = document.getElementById('fontName-' + id);
+    var oldFontName = document.getElementById('hFontName-' + id).value;
+    var oldLocale = document.getElementById('hLocale-' + id).value;
+    var newLocale = '';
+    for (fontName in fontList) {
+      locales = fontList[fontName];
+      if (locales.length > 1) {
+        for (i in locales) {
+          newLocale = locales[i];
+          localeName = localeObj[newLocale];
+          //console.log('newLocale: ' + newLocale + ' | ' + localeName)
+          if(fontName == oldFontName && oldLocale == newLocale) {
+            list.add(new Option(fontName + '-' + localeName, fontName, false, true));
+          } else {
+            list.add(new Option(fontName + '-' + localeName, fontName));
+          }
+        }
+      } else {
+        newLocale = locales;
+        localeName = localeObj[newLocale];
+        if(fontName == oldFontName && oldLocale == newLocale) {
+          list.add(new Option(fontName + '-' + localeName, fontName, false, true));
+        } else {
+          list.add(new Option(fontName + '-' + localeName, fontName));
+        }
+      }
+
+    }
+}
+
 window.addEventListener('load', myOnLoad);

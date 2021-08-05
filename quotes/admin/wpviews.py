@@ -128,10 +128,11 @@ def makeQuote(request):
     id = request.POST.get('id', None)
     wordWrap = request.POST.get('wordWrap', None)
     fontSize = request.POST.get('fontSize', None)
+    fontName = request.POST.get('fontName', None)
     fontColor = request.POST.get('fontColor', None)
     imageId = request.POST.get('imageId', None)
     isPin = request.POST.get('isPin')
-    param = (fontSize, wordWrap, fontColor, imageId)
+    param = (fontSize, wordWrap, fontColor, imageId, fontName)
     print('id : ', id)
     quote = None
     if id != None:

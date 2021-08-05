@@ -12,12 +12,15 @@ sitemaps = {'quotes': QuotesDetailsSitemap, 'author' : QuotesAuthorSitemap, 'cat
 
 urlpatterns = [
     path('',views.index, name='index'),
+    path('hindi',views.hindiHome, name='hindiHome'),
     path('<slug:category>-quotes',views.category, name='category'),
     path('authors/<slug:authorSlug>-quotes',views.author, name='author'),
     path('authors-list',views.authorsList, name='authorsList'),
     path('category-list',views.categoryList, name='categoryList'),
     path('image-list',views.imageList, name='imageList'),
+    path('font-list',views.fontList, name='fontList'),
     path('quotes/<slug:quotesSlug>-<int:id>',views.details, name='details'),
+    path('hindi/quotes/<slug:quotesSlug>-<int:id>',views.hindiDetails, name='hindiDetails'),
     path('search',views.search, name='search'),
     path('mycms',views.showLogin, name='login'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
