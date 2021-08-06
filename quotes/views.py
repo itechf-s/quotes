@@ -127,6 +127,7 @@ def search(request):
 
 def dynamicHome(request, locale):
     langCode = getLocaleCode(locale)
+    print('dynamicHome')
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : langCode}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     filterParam['isPin'] = 0
@@ -137,6 +138,7 @@ def dynamicHome(request, locale):
 
 def dynamicDetails(request, locale, quotesSlug, id):
     langCode = getLocaleCode(locale)
+    print('dynamicDetails')
     quote1 = Quotes.objects.filter(id=id).filter(publishAt__lt = timezone.now()).filter(isActive=1).first()
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : langCode}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
@@ -150,6 +152,7 @@ def dynamicDetails(request, locale, quotesSlug, id):
 
 def dynamicCategory(request, locale, category):
     langCode = getLocaleCode(locale)
+    print('dynamicCategory')
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'category' : category, 'locale' : langCode}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     if not pinQuotes:
@@ -167,6 +170,7 @@ def dynamicCategory(request, locale, category):
 
 def dynamicAuthor(request, locale, authorSlug):
     langCode = getLocaleCode(locale)
+    print('dynamicAuthor')
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : langCode, 'authorSlug' : authorSlug}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     if not pinQuotes:
