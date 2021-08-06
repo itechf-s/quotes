@@ -1,3 +1,4 @@
+import textwrap
 from bestrani import env
 
 imgPrefix = env.get('quotes', 'IMG_PREFIX')
@@ -12,6 +13,8 @@ def setMetas(qots, url):
     if qots != None:
         qot = qots[0]
         imgPath = imgPrefix + imgDir + qot.imagePath
+        title = qot.title
+        title = title if title else qot.imageAlt
         metas['title'] = qot.imageAlt
         metas['og:site_name'] = 'BestRani'
         metas['og:title'] = qot.imageAlt

@@ -12,7 +12,6 @@ sitemaps = {'quotes': QuotesDetailsSitemap, 'author' : QuotesAuthorSitemap, 'cat
 
 urlpatterns = [
     path('',views.index, name='index'),
-    path('hindi',views.hindiHome, name='hindiHome'),
     path('<slug:category>-quotes',views.category, name='category'),
     path('authors/<slug:authorSlug>-quotes',views.author, name='author'),
     path('authors-list',views.authorsList, name='authorsList'),
@@ -20,9 +19,12 @@ urlpatterns = [
     path('image-list',views.imageList, name='imageList'),
     path('font-list',views.fontList, name='fontList'),
     path('quotes/<slug:quotesSlug>-<int:id>',views.details, name='details'),
-    path('hindi/quotes/<slug:quotesSlug>-<int:id>',views.hindiDetails, name='hindiDetails'),
     path('search',views.search, name='search'),
     path('mycms',views.showLogin, name='login'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
+    path('<str:locale>',views.dynamicHome, name='dynamicHome'),
+    path('<str:locale>/authors/<slug:authorSlug>-quotes',views.dynamicAuthor, name='dynamicAuthor'),
+    path('<str:locale>/quotes/<slug:quotesSlug>-<int:id>',views.dynamicDetails, name='dynamicDetails'),
+    path('<str:locale>/<slug:category>-quotes',views.dynamicCategory, name='dynamicCategory'),
 ]

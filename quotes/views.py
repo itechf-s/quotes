@@ -95,18 +95,6 @@ def details(request, quotesSlug, id):
     metas = seo.setMetas((quote1,), url)
     return render(request, 'details.html', {'quotes': quotes, 'quote1' : quote1, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
 
-def hindiDetails(request, quotesSlug, id):
-    quote1 = Quotes.objects.filter(id=id).filter(publishAt__lt = timezone.now()).filter(isActive=1).first()
-    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 2}
-    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
-    filterParam['isPin'] = 0
-    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
-    quotes = Quotes.objects.filter(**filterParam).exclude(id=id).order_by('-publishAt')[:rows]
- 
-    url = urlPrefix + '/hindi/quotes/' + quotesSlug + '-' + str(id)
-    metas = seo.setMetas((quote1,), url)
-    return render(request, 'details.html', {'quotes': quotes, 'quote1' : quote1, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
-
 def showLogin(request):
     return render(request, 'login.html')
 
@@ -137,11 +125,63 @@ def search(request):
     metas = seo.setMetas(quotes, url)
     return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix})
 
-def hindiHome(request):
-    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 2}
+def dynamicHome(request, locale):
+    langCode = getLocaleCode(locale)
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : langCode}
     pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
     filterParam['isPin'] = 0
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
-    url = urlPrefix + '/hindi'
+    url = urlPrefix + '/' + locale
     metas = seo.setMetas(pinQuotes, url)
-    return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, 'urlPrefix' : urlPrefix, 'pinQuotes': pinQuotes})
+    return render(request, 'dynamic-home.html', {'locale': locale, 'quotes': quotes, 'metas' : metas, 'url': url, 'urlPrefix' : urlPrefix, 'pinQuotes': pinQuotes})
+
+def dynamicDetails(request, locale, quotesSlug, id):
+    langCode = getLocaleCode(locale)
+    quote1 = Quotes.objects.filter(id=id).filter(publishAt__lt = timezone.now()).filter(isActive=1).first()
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : langCode}
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    filterParam['isPin'] = 0
+    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    quotes = Quotes.objects.filter(**filterParam).exclude(id=id).order_by('-publishAt')[:rows]
+ 
+    url = urlPrefix + '/' + locale + '/quotes/' + quotesSlug + '-' + str(id)
+    metas = seo.setMetas((quote1,), url)
+    return render(request, 'dynamic-details.html', {'locale': locale, 'quotes': quotes, 'quote1' : quote1, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+
+def dynamicCategory(request, locale, category):
+    langCode = getLocaleCode(locale)
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'category' : category, 'locale' : langCode}
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    if not pinQuotes:
+        filterParam.pop('category')
+        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    filterParam['isPin'] = 0
+    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    if not quotes:
+        filterParam.pop('category')
+        quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+
+    url = urlPrefix + '/' + locale + '/' + category + '-quotes'
+    metas = seo.setMetas(pinQuotes, url)
+    return render(request, 'dynamic-home.html', {'locale': locale, 'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+
+def dynamicAuthor(request, locale, authorSlug):
+    langCode = getLocaleCode(locale)
+    filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : langCode, 'authorSlug' : authorSlug}
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    if not pinQuotes:
+        filterParam.pop('authorSlug')
+        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    filterParam['isPin'] = 0
+    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    if not quotes:
+        filterParam.pop('authorSlug')
+        quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    url = urlPrefix + '/' + locale + '/authors/' + authorSlug + '-quotes'
+    metas = seo.setMetas(pinQuotes, url)
+    return render(request, 'dynamic-home.html', {'locale': locale, 'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+
+def getLocaleCode(locale):
+    langCode = 2 if locale == 'hindi' else 1
+    langCode = 3 if locale == 'urdu' else langCode
+    return langCode

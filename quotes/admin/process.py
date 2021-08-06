@@ -19,7 +19,9 @@ def updateQuotesImage(quotesObj):
             obj.authorSlug = slugify(obj.author)
         if not obj.categorySlug:
             obj.categorySlug = slugify(obj.category)
-        obj.title = textwrap.wrap(obj.quotesTxt, width=100)[0]
+        obj.title = textwrap.wrap(obj.quotes, width=100)[0]
+        if not obj.title:
+            obj.title = textwrap.wrap(obj.quotesTxt, width=100)[0]
         obj.isUpdated = 1
         img = utils.findOneImage()
         fontObj = utils.findFont(obj)
