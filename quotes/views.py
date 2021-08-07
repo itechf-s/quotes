@@ -188,4 +188,5 @@ def dynamicAuthor(request, locale, authorSlug):
 def getLocaleCode(locale):
     langCode = 2 if locale == 'hindi' else 1
     langCode = 3 if locale == 'urdu' else langCode
+    langCode = 4 if locale == 'bengali' else langCode
     return langCode

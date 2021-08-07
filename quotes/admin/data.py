@@ -2,7 +2,6 @@ import os, csv
 from quotes.models import Quotes
 
 def csvImport(filePath):
-    print('file path : ', filePath)
     if os.path.isfile(filePath):
         with open(filePath, newline='') as fObj:
             rows = csv.reader(fObj, delimiter='\t')
@@ -17,6 +16,7 @@ def csvImport(filePath):
                     qot['locale'] = row[5]
                     qot['quotesTxt'] = row[6]
                     qots = Quotes(**qot)
+                    print('in quotes')
                     qots.save()
                 except ValueError:
                     print('Value Error')

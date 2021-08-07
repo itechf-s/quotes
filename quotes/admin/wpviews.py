@@ -1,4 +1,4 @@
-from quotes import admin
+from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 from django.shortcuts import redirect, render
 from quotes.models import Quotes
@@ -16,7 +16,7 @@ createRows = int(env.get('quotes', 'CREATE_ROWS'))
 autoPinMaxChar = int(env.get('quotes', 'AUTO_PIN_MAX_CHAR'))
 pinMod = int(env.get('quotes', 'PIN_MOD'))
 autoCreateRows = int(env.get('quotes', 'AUTO_CREATE_ROWS'))
-schdApiKey = env.get('security', 'SCHD_API_KEY')
+qotFilePath = env.get('quotes', 'TSV_FILE_PATH')
 
 
 def showLogin(request):
@@ -184,10 +184,11 @@ def cachePurge(request):
 
 @login_required(login_url='/mycms')
 def importQuotes(request):
-    filePath = env.get('quotes', 'TSV_FILE_PATH')
-    id = request.GET.get('id', None)
-    if id == '159753':
-        data.csvImport(filePath)
-    else:
-        print('Not Allowed')
+    if request.method == 'POST':
+        quotesFile = request.FILES['quotesFile'] if 'quotesFile' in request.FILES else None
+        if quotesFile:
+            fs = FileSystemStorage(location=qotFilePath)
+            file = fs.save(quotesFile.name, quotesFile)
+            data.csvImport(qotFilePath + file)
+    #return render(request, 'activate.html', {'quotes': 'quote'})
     return redirect('/wp-admin/list/0/1')
