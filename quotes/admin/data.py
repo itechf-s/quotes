@@ -1,13 +1,14 @@
 import os, csv
 from quotes.models import Quotes
 
-def csvImport(filePath):
+def csvImport(filePath, username):
     if os.path.isfile(filePath):
         with open(filePath, newline='') as fObj:
             rows = csv.reader(fObj, delimiter='\t')
             for row in rows:
                 try:
                     qot = {}
+                    qot['createdBy'] = username
                     qot['quotes'] = row[0]
                     qot['author'] = row[1]
                     qot['authorSlug'] = row[2]
@@ -16,7 +17,6 @@ def csvImport(filePath):
                     qot['locale'] = row[5]
                     qot['quotesTxt'] = row[6]
                     qots = Quotes(**qot)
-                    print('in quotes')
                     qots.save()
                 except ValueError:
                     print('Value Error')

@@ -26,6 +26,7 @@ class Quotes(models.Model):
     publishAt = models.DateTimeField(null=True, blank=True)
     desc = models.CharField(max_length=1500, null=True, blank=True)
     fontName = models.CharField(max_length=50, null=True, blank=True)
+    createdBy = models.CharField(max_length=10, null=True, blank=True)
     fontSize = models.IntegerField(null=True, blank=True)
     wordWrap = models.IntegerField(null=True, blank=True)
     fontColor = models.CharField(max_length=50, null=True, blank=True)

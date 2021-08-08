@@ -194,11 +194,11 @@ def cachePurge(request):
 
 @login_required(login_url='/mycms')
 def importQuotes(request):
+    username = request.user.username
     if request.method == 'POST':
         quotesFile = request.FILES['quotesFile'] if 'quotesFile' in request.FILES else None
         if quotesFile:
             fs = FileSystemStorage(location=qotFilePath)
             file = fs.save(quotesFile.name, quotesFile)
-            data.csvImport(qotFilePath + file)
-    #return render(request, 'activate.html', {'quotes': 'quote'})
+            data.csvImport(qotFilePath + file, username)
     return redirect('/wp-admin/list/0/1')
