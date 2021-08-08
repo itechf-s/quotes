@@ -153,7 +153,7 @@ function getImage(id){
 }
 
 function getFont(id){
-  var localeObj = {1:'English', 2:'हिन्दी', 4:'Bengali', 3:'اردو'};
+  var localeObj = {1:'English', 2:'हिन्दी', 4:'Bengali', 5:'Punjabi', 6:'Marathi', 7:'Telugu', 3:'اردو'};
   var fontList = localStorage.getItem('font');
   if (fontList == null || fontList == undefined) {
     callByUrl('font');

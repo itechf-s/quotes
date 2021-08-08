@@ -1,5 +1,4 @@
 {% load static %}
-
 <input type="hidden" id="hCsrf" value="{{ csrf_token }}"/>
 <input type="hidden" id="hRawImgPrefix" value="{% static 'images/raw/' %}"/>
 <input type="hidden" id="hVer" value="{% now 'u' %}"/>
@@ -21,7 +20,7 @@
   {% endif %}
   </div>
     <div class="card-body">
-      <p class="card-text text-center blockquote">{{quote.id}}. {{quote.quotes}}</p>
+      <p class="card-text text-center blockquote urdu">{{quote.id}}. {{quote.quotes}} Lang: {{quote.locale}}</p>
       <p class="text-end">{{quote.author}}</p>
       <p class="card-text">{{quote.category}}</p>
       <p class="card">{{quote.publishAt}}</p>

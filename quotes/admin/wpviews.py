@@ -46,6 +46,7 @@ def list(request, isActive, isUpdated):
     category = request.GET.get('category', None)
     quotesTxt = request.GET.get('quotes', None)
     author = request.GET.get('author', None)
+    locale = request.GET.get('locale', None)
     id = request.GET.get('id', None)
     isSchd = request.GET.get('isSchd', None)
 
@@ -56,6 +57,8 @@ def list(request, isActive, isUpdated):
         filterParam['category'] = category
     if author:
         filterParam['author'] = author
+    if locale:
+        filterParam['locale'] = locale
     if id:
         filterParam['id'] = id
     if isSchd:

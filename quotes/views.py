@@ -189,4 +189,7 @@ def getLocaleCode(locale):
     langCode = 2 if locale == 'hindi' else 1
     langCode = 3 if locale == 'urdu' else langCode
     langCode = 4 if locale == 'bengali' else langCode
+    langCode = 5 if locale == 'punjabi' else langCode
+    langCode = 6 if locale == 'marathi' else langCode
+    langCode = 7 if locale == 'telugu' else langCode
     return langCode
