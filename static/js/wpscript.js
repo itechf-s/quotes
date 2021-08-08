@@ -27,6 +27,18 @@ let formData = new FormData();
 delDiv('qCardDiv' + id);
 }
 
+//delete quotes
+function deleteQuotes(id, isDelete) {
+let formData = new FormData();
+    formData.append('id', id);
+    formData.append('isDelete', isDelete);
+    formData.append('csrfmiddlewaretoken', csrfToken);
+    fetch("/wp-admin/activate",{
+    body: formData,
+    method: "post"
+});
+delDiv('qCardDiv' + id);
+}
 
 function makeQuote(id) {
 let formData = new FormData();

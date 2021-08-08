@@ -75,6 +75,7 @@ def list(request, isActive, isUpdated):
 def activate(request):
     id = request.POST.get('id', None)
     isActive = request.POST.get('isActive', None)
+    isDelete = request.POST.get('isDelete', None)
     isSchd = request.POST.get('isSchd', None)
 
     quote = None
@@ -84,6 +85,8 @@ def activate(request):
             db.activateQuotes(quote)
         elif isActive == '0':
             db.deAactivateQuotes(quote)
+        elif isDelete:
+            quote.delete()
         elif isSchd:
             db.scheduleQuotes(quote, isSchd)    
     return render(request, 'activate.html', {'quotes': quote})

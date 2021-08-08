@@ -27,6 +27,7 @@
       <p class="card">{{quote.publishAt}}</p>
       {% if quote.isActive == 0 and quote.isUpdated == 0 or quote.isPin == 0 %}
       <p class="btn btn-outline-dark btn-sm" onclick="prepareQuotes({{quote.id}}, 1)">Prepare Quotes</p>
+      {% include './deleteQuoteModal.html' %}
       {% endif %}
       {% if quote.isActive == 0 and quote.isUpdated == 1 %}
         {% if quote.isSchd == 0 %}
@@ -53,7 +54,7 @@
   {% endfor %}
 </div>
 {% include './pagination.html' %} 
-
+<span class="text">1:'English', 2:'हिन्दी', 4:'Bengali', 5:'Punjabi', 6:'Marathi', 7:'Telugu', 3:'اردو'</span>
 {% include './searchModal.html' %}
 {% include './importQuotesModal.html' %}
 {% include './importImageModal.html' %}
