@@ -2,10 +2,11 @@
 <input type="hidden" id="hCsrf" value="{{ csrf_token }}"/>
 <input type="hidden" id="hRawImgPrefix" value="{% static 'images/raw/' %}"/>
 <input type="hidden" id="hVer" value="{% now 'u' %}"/>
-<div class="blockquote">Total : {{quotes.count}}</div>
+<div class="blockquote">Total : {{page_obj.paginator.count}}</div>
 
+{% include './pagination.html' %} 
 <div class="card-group mt-3 mb-3 ms-1 me-1">
-{% for quote in quotes %}
+{% for quote in page_obj %}
   <div class="card mb-1 ms-1 me-1" id="qCardDiv{{quote.id}}">
   <div class="row">
   {% if quote.imagePath %}
@@ -51,6 +52,8 @@
     {% endif %}
   {% endfor %}
 </div>
+{% include './pagination.html' %} 
+
 {% include './searchModal.html' %}
 {% include './importQuotesModal.html' %}
 {% include './importImageModal.html' %}

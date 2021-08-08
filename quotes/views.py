@@ -1,5 +1,6 @@
 from quotes.admin.wpmodels import Images
 from django.http.response import JsonResponse
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.utils import timezone
 from quotes.models import Quotes
@@ -12,20 +13,26 @@ urlPrefix = env.get('general','URL_PREFIX')
 
 def index(request):
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 1}
-    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     filterParam['isPin'] = 0
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    paginator = Paginator(pinQuotes, pinRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     url = urlPrefix + '/'
     metas = seo.setMetas(pinQuotes, url)
-    return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, 'urlPrefix' : urlPrefix, 'pinQuotes': pinQuotes})
+    return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, 'urlPrefix' : urlPrefix, 'pinQuotes': pinQuotes, 'page_obj': page_obj})
 
 def category(request, category):
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'category' : category, 'locale' : 1}
-    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     if not pinQuotes:
         filterParam.pop('category')
-        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     filterParam['isPin'] = 0
+    paginator = Paginator(pinQuotes, pinRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     if not quotes:
         filterParam.pop('category')
@@ -33,22 +40,25 @@ def category(request, category):
 
     url = urlPrefix + '/' + category + '-quotes'
     metas = seo.setMetas(pinQuotes, url)
-    return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+    return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes, 'page_obj': page_obj})
 
 def author(request, authorSlug):
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 1, 'authorSlug' : authorSlug}
-    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     if not pinQuotes:
         filterParam.pop('authorSlug')
-        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     filterParam['isPin'] = 0
+    paginator = Paginator(pinQuotes, pinRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     if not quotes:
         filterParam.pop('authorSlug')
         quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     url = urlPrefix + '/authors/' + authorSlug + '-quotes'
     metas = seo.setMetas(pinQuotes, url)
-    return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+    return render(request, 'index.html', {'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes, 'page_obj': page_obj})
 
 def authorsList(request):
     isActive = request.GET.get('isActive', None)
@@ -86,14 +96,16 @@ def categoryList(request):
 def details(request, quotesSlug, id):
     quote1 = Quotes.objects.filter(id=id).filter(publishAt__lt = timezone.now()).filter(isActive=1).first()
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : 1}
-    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    pinQuotes = Quotes.objects.filter(**filterParam).exclude(id=id).order_by('-publishAt')
     filterParam['isPin'] = 0
-    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    paginator = Paginator(pinQuotes, pinRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     quotes = Quotes.objects.filter(**filterParam).exclude(id=id).order_by('-publishAt')[:rows]
  
     url = urlPrefix + '/quotes/' + quotesSlug + '-' + str(id)
     metas = seo.setMetas((quote1,), url)
-    return render(request, 'details.html', {'quotes': quotes, 'quote1' : quote1, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+    return render(request, 'details.html', {'quotes': quotes, 'quote1' : quote1, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes, 'page_obj': page_obj})
 
 def showLogin(request):
     return render(request, 'login.html')
@@ -129,36 +141,44 @@ def dynamicHome(request, locale):
     langCode = getLocaleCode(locale)
     print('dynamicHome')
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : langCode}
-    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     filterParam['isPin'] = 0
+    paginator = Paginator(pinQuotes, pinRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     url = urlPrefix + '/' + locale
     metas = seo.setMetas(pinQuotes, url)
-    return render(request, 'dynamic-home.html', {'locale': locale, 'quotes': quotes, 'metas' : metas, 'url': url, 'urlPrefix' : urlPrefix, 'pinQuotes': pinQuotes})
+    return render(request, 'dynamic-home.html', {'locale': locale, 'quotes': quotes, 'metas' : metas, 'url': url, 'urlPrefix' : urlPrefix, 'pinQuotes': pinQuotes, 'page_obj': page_obj})
 
 def dynamicDetails(request, locale, quotesSlug, id):
     langCode = getLocaleCode(locale)
     print('dynamicDetails')
     quote1 = Quotes.objects.filter(id=id).filter(publishAt__lt = timezone.now()).filter(isActive=1).first()
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : langCode}
-    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    pinQuotes = Quotes.objects.filter(**filterParam).exclude(id=id).order_by('-publishAt')
     filterParam['isPin'] = 0
-    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
+    paginator = Paginator(pinQuotes, pinRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     quotes = Quotes.objects.filter(**filterParam).exclude(id=id).order_by('-publishAt')[:rows]
  
     url = urlPrefix + '/' + locale + '/quotes/' + quotesSlug + '-' + str(id)
     metas = seo.setMetas((quote1,), url)
-    return render(request, 'dynamic-details.html', {'locale': locale, 'quotes': quotes, 'quote1' : quote1, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+    return render(request, 'dynamic-details.html', {'locale': locale, 'quotes': quotes, 'quote1' : quote1, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes, 'page_obj': page_obj})
 
 def dynamicCategory(request, locale, category):
     langCode = getLocaleCode(locale)
     print('dynamicCategory')
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'category' : category, 'locale' : langCode}
-    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     if not pinQuotes:
         filterParam.pop('category')
-        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     filterParam['isPin'] = 0
+    paginator = Paginator(pinQuotes, pinRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     if not quotes:
         filterParam.pop('category')
@@ -166,24 +186,27 @@ def dynamicCategory(request, locale, category):
 
     url = urlPrefix + '/' + locale + '/' + category + '-quotes'
     metas = seo.setMetas(pinQuotes, url)
-    return render(request, 'dynamic-home.html', {'locale': locale, 'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+    return render(request, 'dynamic-home.html', {'locale': locale, 'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes, 'page_obj': page_obj})
 
 def dynamicAuthor(request, locale, authorSlug):
     langCode = getLocaleCode(locale)
     print('dynamicAuthor')
     filterParam = {'isActive' : 1, 'publishAt__lt' : timezone.now(), 'isPin' : 1, 'locale' : langCode, 'authorSlug' : authorSlug}
-    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+    pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     if not pinQuotes:
         filterParam.pop('authorSlug')
-        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:pinRows]
+        pinQuotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
     filterParam['isPin'] = 0
+    paginator = Paginator(pinQuotes, pinRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     if not quotes:
         filterParam.pop('authorSlug')
         quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:rows]
     url = urlPrefix + '/' + locale + '/authors/' + authorSlug + '-quotes'
     metas = seo.setMetas(pinQuotes, url)
-    return render(request, 'dynamic-home.html', {'locale': locale, 'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes})
+    return render(request, 'dynamic-home.html', {'locale': locale, 'quotes': quotes, 'metas' : metas, 'url': url, "urlPrefix" : urlPrefix, 'pinQuotes': pinQuotes, 'page_obj': page_obj})
 
 def getLocaleCode(locale):
     langCode = 2 if locale == 'hindi' else 1

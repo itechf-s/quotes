@@ -14,8 +14,9 @@
     
    }
    </script>
+{% include './pagination.html' %}   
 <div class="card-group mt-3 mb-3 ms-1 me-1">
-{% for image in images %}
+{% for image in page_obj %}
   <div class="card mb-1 ms-1 me-1">
     <a href="{{image.pageURL}}">
       <img src="{{image.previewURL}}" class="img-fluid rounded" alt="{{image.tags}}" title="{{image.tags}}">
@@ -39,5 +40,4 @@
     {% endif %}
   {% endfor %}
 </div>
-{% include './searchModal.html' %}
-{% include './importImageModal.html' %}
+{% include './pagination.html' %}

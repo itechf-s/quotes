@@ -10,7 +10,7 @@ qWidth = int(env.get('quotes', 'WIDTH'))
 def setMetas(qots, url):
     desc = seoDec
     metas = {}
-    if qots != None:
+    if qots:
         qot = qots[0]
         imgPath = imgPrefix + imgDir + qot.imagePath
         title = qot.title

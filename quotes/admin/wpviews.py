@@ -1,4 +1,5 @@
 from django.core.files.storage import FileSystemStorage
+from django.core.paginator import Paginator
 from django.utils import timezone
 from django.shortcuts import redirect, render
 from quotes.models import Quotes
@@ -64,8 +65,11 @@ def list(request, isActive, isUpdated):
     if isSchd:
         filterParam['isSchd'] = isSchd
 
-    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:adminRows]
-    return render(request, 'list.html', {'quotes': quotes})
+    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
+    paginator = Paginator(quotes, adminRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'list.html', {'page_obj': page_obj})
 
 @login_required(login_url='/mycms')
 def activate(request):
@@ -113,8 +117,11 @@ def listImages(request, isActive):
     filterParam = {'isActive' : isActive, 'createdAt__lt' : timezone.now()}
     if tags:
         filterParam['tags__icontains'] = tags
-    rawImages = Images.objects.filter(**filterParam).order_by('-createdAt')[:imageRows]
-    return render(request, 'images.html', {'images': rawImages})
+    rawImages = Images.objects.filter(**filterParam).order_by('-createdAt')
+    paginator = Paginator(rawImages, imageRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'images.html', {'page_obj': page_obj})
 
 @login_required(login_url='/mycms')
 def actImage(request):

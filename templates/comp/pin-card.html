@@ -1,8 +1,7 @@
 {% load static %}
-
-
+{% include './pagination.html' %}
 <div class="card-group mt-3 mb-3 ms-1 me-1">
-{% for quote in pinQuotes %}
+{% for quote in page_obj %}
   <div class="card mb-1 ms-1 me-1">
     <a href="{{urlPrefix}}/quotes/{{quote.quotes|truncatewords:5|slugify}}-by-{{quote.author|slugify}}-{{quote.id}}">
       <img src="{% static './images/pin-lazy-img.png' %}" data-src="{% static 'images/' %}{{quote.imagePathPin}}" class="lazy" alt="{{quote.imageAlt}}" width="350" height="525">
@@ -23,4 +22,5 @@
     {% endif %}
   {% endfor %}
 </div>
+{% include './pagination.html' %}
 <script async defer data-pin-hover="true" data-pin-tall="true" src="//assets.pinterest.com/js/pinit.js"></script>  
