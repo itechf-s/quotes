@@ -16,7 +16,7 @@
             <li><a href="/wp-admin/list/0/1?isSchd=1&v={% now 'u' %}" class="dropdown-item">Schedule Quotes</a></li> 
             <li><a href="/wp-admin/list/1/1?v={% now 'u' %}" class="dropdown-item">Published Quotes</a></li> 
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#searchModal">Search Quotes</a></li>
-            <li><a href="/wp-admin/import-quotes?id=159753" class="dropdown-item">Import Quotes</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importQuotesModal">Import Quotes</a></li>
             <li><a href="/wp-admin/update?v={% now 'u' %}" class="dropdown-item">Create Quotes</a></li>
             <li><a href="/wp-admin/make-bulk-quotes?rows=4&v={% now 'u' %}" class="dropdown-item">Automatic Quotes</a></li>
           </ul>
@@ -29,6 +29,7 @@
             <li><a href="/wp-admin/list-images/0?v={% now 'u' %}" class="dropdown-item">Deactive Images</a></li>
             <li><a href="/wp-admin/list-images/1?v={% now 'u' %}" class="dropdown-item">Active Images</a></li>
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importImageModal">Import Images</a></li>
+            <li><span onclick="loadData();" class="dropdown-item btn">Reload List</span></li>
           </ul>
         </li>
         <li class="nav-item">

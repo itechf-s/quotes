@@ -1,5 +1,9 @@
 <!doctype html>
+{% if "hindi" in url %}
+<html lang="hi">
+  {% else %}
 <html lang="en">
+{% endif %}
   <head>
   {% include './header.html' %}
   {% block seo%}{% endblock %}

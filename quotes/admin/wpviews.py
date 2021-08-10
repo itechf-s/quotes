@@ -1,4 +1,5 @@
-from quotes import admin
+from django.core.files.storage import FileSystemStorage
+from django.core.paginator import Paginator
 from django.utils import timezone
 from django.shortcuts import redirect, render
 from quotes.models import Quotes
@@ -16,7 +17,7 @@ createRows = int(env.get('quotes', 'CREATE_ROWS'))
 autoPinMaxChar = int(env.get('quotes', 'AUTO_PIN_MAX_CHAR'))
 pinMod = int(env.get('quotes', 'PIN_MOD'))
 autoCreateRows = int(env.get('quotes', 'AUTO_CREATE_ROWS'))
-schdApiKey = env.get('security', 'SCHD_API_KEY')
+qotFilePath = env.get('quotes', 'TSV_FILE_PATH')
 
 
 def showLogin(request):
@@ -46,6 +47,7 @@ def list(request, isActive, isUpdated):
     category = request.GET.get('category', None)
     quotesTxt = request.GET.get('quotes', None)
     author = request.GET.get('author', None)
+    locale = request.GET.get('locale', None)
     id = request.GET.get('id', None)
     isSchd = request.GET.get('isSchd', None)
 
@@ -56,18 +58,24 @@ def list(request, isActive, isUpdated):
         filterParam['category'] = category
     if author:
         filterParam['author'] = author
+    if locale:
+        filterParam['locale'] = locale
     if id:
         filterParam['id'] = id
     if isSchd:
         filterParam['isSchd'] = isSchd
 
-    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')[:adminRows]
-    return render(request, 'list.html', {'quotes': quotes})
+    quotes = Quotes.objects.filter(**filterParam).order_by('-publishAt')
+    paginator = Paginator(quotes, adminRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'list.html', {'page_obj': page_obj})
 
 @login_required(login_url='/mycms')
 def activate(request):
     id = request.POST.get('id', None)
     isActive = request.POST.get('isActive', None)
+    isDelete = request.POST.get('isDelete', None)
     isSchd = request.POST.get('isSchd', None)
 
     quote = None
@@ -77,6 +85,8 @@ def activate(request):
             db.activateQuotes(quote)
         elif isActive == '0':
             db.deAactivateQuotes(quote)
+        elif isDelete:
+            quote.delete()
         elif isSchd:
             db.scheduleQuotes(quote, isSchd)    
     return render(request, 'activate.html', {'quotes': quote})
@@ -110,8 +120,11 @@ def listImages(request, isActive):
     filterParam = {'isActive' : isActive, 'createdAt__lt' : timezone.now()}
     if tags:
         filterParam['tags__icontains'] = tags
-    rawImages = Images.objects.filter(**filterParam).order_by('-createdAt')[:imageRows]
-    return render(request, 'images.html', {'images': rawImages})
+    rawImages = Images.objects.filter(**filterParam).order_by('-createdAt')
+    paginator = Paginator(rawImages, imageRows)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'images.html', {'page_obj': page_obj})
 
 @login_required(login_url='/mycms')
 def actImage(request):
@@ -128,10 +141,11 @@ def makeQuote(request):
     id = request.POST.get('id', None)
     wordWrap = request.POST.get('wordWrap', None)
     fontSize = request.POST.get('fontSize', None)
+    fontName = request.POST.get('fontName', None)
     fontColor = request.POST.get('fontColor', None)
     imageId = request.POST.get('imageId', None)
     isPin = request.POST.get('isPin')
-    param = (fontSize, wordWrap, fontColor, imageId)
+    param = (fontSize, wordWrap, fontColor, imageId, fontName)
     print('id : ', id)
     quote = None
     if id != None:
@@ -183,10 +197,11 @@ def cachePurge(request):
 
 @login_required(login_url='/mycms')
 def importQuotes(request):
-    filePath = env.get('quotes', 'TSV_FILE_PATH')
-    id = request.GET.get('id', None)
-    if id == '159753':
-        data.csvImport(filePath)
-    else:
-        print('Not Allowed')
+    username = request.user.username
+    if request.method == 'POST':
+        quotesFile = request.FILES['quotesFile'] if 'quotesFile' in request.FILES else None
+        if quotesFile:
+            fs = FileSystemStorage(location=qotFilePath)
+            file = fs.save(quotesFile.name, quotesFile)
+            data.csvImport(qotFilePath + file, username)
     return redirect('/wp-admin/list/0/1')

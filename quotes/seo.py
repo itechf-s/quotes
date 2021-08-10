@@ -1,15 +1,20 @@
+import textwrap
 from bestrani import env
 
 imgPrefix = env.get('quotes', 'IMG_PREFIX')
 imgDir = env.get('quotes', 'IMG_DIR')
 seoDec = env.get('quotes', 'SEO_DESC')
+qHeight = int(env.get('quotes', 'HEIGHT'))
+qWidth = int(env.get('quotes', 'WIDTH'))
 
 def setMetas(qots, url):
     desc = seoDec
     metas = {}
-    if qots != None:
+    if qots:
         qot = qots[0]
         imgPath = imgPrefix + imgDir + qot.imagePath
+        title = qot.title
+        title = title if title else qot.imageAlt
         metas['title'] = qot.imageAlt
         metas['og:site_name'] = 'BestRani'
         metas['og:title'] = qot.imageAlt
@@ -21,8 +26,8 @@ def setMetas(qots, url):
         metas['og:url'] = url
         metas['og:image'] = imgPath
         metas['og:image:type'] = 'image/jpeg'
-        metas['og:image:width'] = '200'
-        metas['og:image:height'] = '200'
+        metas['og:image:width'] = qWidth
+        metas['og:image:height'] = qHeight
         metas['og:locale'] = 'en_US'
         metas['og:locale:alternate'] = 'en_IN'    
         metas['twitter:card'] = 'summary'       
@@ -32,6 +37,8 @@ def setMetas(qots, url):
         metas['twitter:description'] = desc     
         metas['twitter:image'] = imgPath
         metas['datePublished'] = qot.publishAt.strftime("%Y-%m-%dT%H:%M:%S%z")
+        metas['article:published_time'] = qot.publishAt.strftime("%Y-%m-%dT%H:%M:%S%z")
+        metas['article:author'] = 'Iffat Zia'
         #if qot.updatedAt > qot.publishAt:
         #    metas['dateModified'] = qot.publishAt.strftime("%Y-%m-%dT%H:%M:%S%z")
     return metas
